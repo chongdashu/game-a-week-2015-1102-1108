@@ -19,7 +19,6 @@ var p = GameState.prototype;
 
     // @phaser
     p.preload = function() {
-       
     };
 
     // @phaser

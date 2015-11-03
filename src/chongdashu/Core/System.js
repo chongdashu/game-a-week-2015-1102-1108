@@ -54,11 +54,16 @@ System.prototype.constructor = System;
     /**
     * The {{#crossLink "Core.Node/Core.Node.TYPE:property"}}{{/crossLink}} that this system
     * will be responsible for.
-    * @property String
+    * @property nodeType
     * @type Core.Node.TYPE
     */
     p.nodeType = null;
 
+    /**
+     * The reference to the {{#crossLink "Core.Engine"}}{{/crossLink}} that this system resides in.
+     * @property {Core.Engine} engine 
+     * @type Core.Engine
+     */
     p.engine = null;
 
 
@@ -124,10 +129,6 @@ System.prototype.constructor = System;
         this.engine = null;
     };
 
-    p.getType = function() {
-        return this.constructor.name;
-    };
-    
 
 // Link
 // ----
