@@ -35,7 +35,7 @@ var p = createjs.extend(AudioComponent, chongdashu.Component);
 
     p.init = function(audio)
     {
-        console.log("[AudioComponent], init()");
+        Debug.log("[AudioComponent], init()", Debug.LEVEL_ENGINE);
         this.Component_init(AudioComponent.TYPE);
 
         this.audio = audio;

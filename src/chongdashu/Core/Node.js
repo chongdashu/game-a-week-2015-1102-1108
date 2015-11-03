@@ -32,7 +32,7 @@ Node.prototype.constructor = Node;
 
     p.init = function(nodeType, entity)
     {
-        // console.log("[Node], init()");
+        // Debug.log("[Node], init()", Debug.LEVEL_ENGINE);
         
         this.nodeType = nodeType;
         this.entity = entity;

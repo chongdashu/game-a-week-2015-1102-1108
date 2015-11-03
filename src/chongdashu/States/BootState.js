@@ -22,7 +22,7 @@ var p = BootState.prototype;
     // @phaser
     p.init = function()
     {
-        console.log("[BootState], init()");
+        Debug.log("[BootState], init()", Debug.LEVEL_ENGINE);
 
         if (this.game.device.desktop)
         {
@@ -62,7 +62,7 @@ var p = BootState.prototype;
 
     // @phaser
     p.preload = function() {
-        console.log("[BootState], preload()");
+        Debug.log("[BootState], preload()", Debug.LEVEL_ENGINE);
 
         this.load.image('preloader-frame', 'res/preloader-frame.png');
         this.load.image('preloader-bar', 'res/preloader-bar.png');
@@ -70,7 +70,7 @@ var p = BootState.prototype;
 
     // @phaser
     p.create = function() {
-        console.log("[BootState], create()");
+        Debug.log("[BootState], create()", Debug.LEVEL_ENGINE);
         this.state.start("PreloadState");
     };
     

@@ -70,7 +70,7 @@ System.prototype.constructor = System;
     */
     p.init = function(nodeType)
     {
-        // console.log("[System], init()");
+        // Debug.log("[System], init()", Debug.LEVEL_ENGINE);
 
         this.priority = 0;
         this.enabled = true;

@@ -30,7 +30,7 @@ var p = createjs.extend(KeyboardControlNode, chongdashu.Node);
 
     p.init = function(entity)
     {
-        console.log("[KeyboardControlNode], init()");
+        Debug.log("[KeyboardControlNode], init()", Debug.LEVEL_ENGINE);
         this.Node_init(KeyboardControlNode.TYPE, entity);
 
         // -- Add references to entity's components here.

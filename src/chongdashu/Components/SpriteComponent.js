@@ -34,7 +34,7 @@ var p = createjs.extend(SpriteComponent, chongdashu.Component);
 
     p.init = function(sprite)
     {
-        console.log("[SpriteComponent], init()");
+        Debug.log("[SpriteComponent], init()", Debug.LEVEL_ENGINE);
         this.Component_init(SpriteComponent.TYPE);
 
         this.sprite = sprite;

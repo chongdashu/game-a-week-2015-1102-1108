@@ -24,7 +24,7 @@ var p = createjs.extend(AudioSystem, chongdashu.KeyboardControlSystem);
 
     p.init = function(state)
     {
-        console.log("[AudioSystem], init()");
+        Debug.log("[AudioSystem], init()", Debug.LEVEL_ENGINE);
         this.System_init(chongdashu.AudioNode);
     };
 

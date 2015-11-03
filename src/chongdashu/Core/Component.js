@@ -47,7 +47,7 @@ Component.prototype.constructor = Component;
     };
 
     p.update = function() {
-        // console.log("[Component], update()");
+        // Debug.log("[Component], update()", Debug.LEVEL_ENGINE);
     };
     
 

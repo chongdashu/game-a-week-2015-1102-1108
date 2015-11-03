@@ -47,7 +47,7 @@ var p = createjs.extend(KeyboardComponent, chongdashu.Component);
 
     p.init = function(keyboard)
     {
-        console.log("[KeyboardComponent], init()");
+        Debug.log("[KeyboardComponent], init()", Debug.LEVEL_ENGINE);
         this.Component_init(KeyboardComponent.TYPE);
         this.keyStates = {};
         this.keyboard = keyboard;

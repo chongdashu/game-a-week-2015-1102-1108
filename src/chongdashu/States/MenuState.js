@@ -21,13 +21,13 @@ var p = MenuState.prototype;
 
     // @phaser
     p.preload = function() {
-        console.log("[MenuState], preload()");
+        Debug.log("[MenuState], preload()", Debug.LEVEL_ENGINE);
         
     };
 
     // @phaser
     p.create = function() {
-        console.log("[MenuState], create()");
+        Debug.log("[MenuState], create()", Debug.LEVEL_ENGINE);
 
         // Preloader specific stuff.
         // -------------------------

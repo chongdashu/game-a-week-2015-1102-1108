@@ -32,7 +32,7 @@ var p = createjs.extend(PlayerControlNode, chongdashu.Node);
 
     p.init = function(entity)
     {
-        console.log("[PlayerControlNode], init()");
+        Debug.log("[PlayerControlNode], init()", Debug.LEVEL_ENGINE);
         this.Node_init(PlayerControlNode.TYPE, entity);
 
         // -- Add references to entity's components here.

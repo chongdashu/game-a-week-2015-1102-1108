@@ -34,7 +34,7 @@ var p = createjs.extend(PlayerComponent, chongdashu.Component);
 
     p.init = function()
     {
-        console.log("[PlayerComponent], init()");
+        Debug.log("[PlayerComponent], init()", Debug.LEVEL_ENGINE);
         this.Component_init(PlayerComponent.TYPE);
 
         this.audioCache = {};

@@ -27,7 +27,7 @@ Family.prototype.constructor = Family;
 
     p.init = function(nodeClass, engine)
     {
-        console.log("[Family], init()");
+        Debug.log("[Family], init()", Debug.LEVEL_ENGINE);
         this.nodes = [];
         this.components = {};
 

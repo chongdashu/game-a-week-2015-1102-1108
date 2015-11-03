@@ -30,7 +30,7 @@ var p = createjs.extend(AudioNode, chongdashu.Node);
 
     p.init = function(entity)
     {
-        console.log("[AudioNode], init()");
+        Debug.log("[AudioNode], init()", Debug.LEVEL_ENGINE);
         this.Node_init(AudioNode.TYPE, entity);
 
         // -- Add references to entity's components here.

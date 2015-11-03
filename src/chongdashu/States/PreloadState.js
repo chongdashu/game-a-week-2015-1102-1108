@@ -26,7 +26,7 @@ var p = PreloadState.prototype;
 
     // @phaser
     p.preload = function() {
-        console.log("[PreloadState], preload()");
+        Debug.log("[PreloadState], preload()", Debug.LEVEL_ENGINE);
 
         // Preloader specific stuff.
         // -------------------------
@@ -47,7 +47,7 @@ var p = PreloadState.prototype;
 
     // @phaser
     p.create = function() {
-        console.log("[PreloadState], create()");
+        Debug.log("[PreloadState], create()", Debug.LEVEL_ENGINE);
         this.loadingBar.cropEnabled = false;
         this.state.start("MenuState");
         

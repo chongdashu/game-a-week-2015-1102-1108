@@ -29,7 +29,7 @@ Engine.prototype.constructor = Engine;
 
     p.init = function()
     {
-        console.log("[Engine], init()");
+        Debug.log("[Engine], init()", Debug.LEVEL_ENGINE);
         this.entities = [];
         this.entityMap = {};
         this.systems = [];

@@ -21,7 +21,7 @@ var p = createjs.extend(PlayerControlSystem, chongdashu.KeyboardControlSystem);
 
     p.init = function(state)
     {
-        console.log("[PlayerControlSystem], init()");
+        Debug.log("[PlayerControlSystem], init()", Debug.LEVEL_ENGINE);
         this.System_init(chongdashu.PlayerControlNode);
     };
 
