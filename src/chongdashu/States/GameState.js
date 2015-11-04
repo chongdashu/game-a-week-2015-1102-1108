@@ -204,7 +204,7 @@ var p = GameState.prototype;
                 var left = tileWidth*tileX;
                 var top =  tileHeight*tileY;
   
-                walkMap.context.fillStyle = "rgba(99, 99, 99, 0.5)";
+                walkMap.context.fillStyle = "rgba(0, 100, 100, 0.5)";
                 
                 walkMap.context.fillRect(left, top, tileWidth, tileHeight);
                 walkMap.context.rect(left, top, tileWidth, tileHeight);
@@ -316,7 +316,7 @@ var p = GameState.prototype;
             var mouseTileX = Math.floor((this.game.width/2 + this.game.input.activePointer.worldX)/tileWidth);
             var mouseTileY = Math.floor((this.game.height/2 + this.game.input.activePointer.worldY)/tileHeight);
 
-            console.error("pointer [%s, %s] [%s, %s]", this.game.input.activePointer.x, this.game.input.activePointer.y, mouseTileX, mouseTileY);
+            // console.error("pointer [%s, %s] [%s, %s]", this.game.input.activePointer.x, this.game.input.activePointer.y, mouseTileX, mouseTileY);
             this.endTileX = mouseTileX;
             this.endTileY = mouseTileY;
         }
@@ -336,6 +336,9 @@ var p = GameState.prototype;
 
         // console.log("update(), path(%s, %s)= %o", playerTileIndex, endIndex, path);
 
+        if (!path) {
+            path = [];
+        }
         var targetIndex = path[0];
         if (path.length > 1) {
             targetIndex = path[1];
