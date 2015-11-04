@@ -17,6 +17,9 @@ var GameState = function(game) {
 };
 var p = GameState.prototype;
 
+    p.walkNodes = null;
+    p.walkEdges = null;
+
     // @phaser
     p.preload = function() {
     };
@@ -102,6 +105,8 @@ var p = GameState.prototype;
                     total_path.push(c);
                 }
 
+                total_path.reverse();
+
                 return total_path;
             }
 
@@ -144,6 +149,8 @@ var p = GameState.prototype;
 
     // @phaser
     p.create = function() {
+
+        this.game.physics.enable(Phaser.Physics.Arcade);
 
         var map = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -201,7 +208,7 @@ var p = GameState.prototype;
                     walkMap.context.fillStyle = "#AA0000";
                 }
                 else {
-                    walkMap.context.fillStyle = "rgba(0, 200, 00, 0.5)";
+                    walkMap.context.fillStyle = "rgba(99, 99, 99, 0.5)";
                 }
                 
                 walkMap.context.fillRect(left, top, tileWidth, tileHeight);
@@ -259,8 +266,14 @@ var p = GameState.prototype;
             var nextX = tileWidth * nextTileX;
             var nextY = tileHeight * nextTileY;
 
+            var r = Math.floor((k / (path.length-1))*255);
+            var g = Math.floor((1-(k / (path.length-1)))*255);
+
+            console.log("k=%s, r=%s, g=%s", k, r, g);
+
             walkMap.context.beginPath();
-            walkMap.context.strokeStyle = 'rgba(255, 0, 255, 1.0)';
+            walkMap.context.strokeStyle = 'rgba(' + r + ', ' + g + ', 0, 1.0)';
+            console.log(walkMap.context.strokeStyle);
             walkMap.context.moveTo(nodeX + tileWidth/2, nodeY + tileHeight/2);
             walkMap.context.lineTo(nextX + tileWidth/2, nextY + tileHeight/2);
             walkMap.context.stroke();
@@ -278,6 +291,9 @@ var p = GameState.prototype;
         console.log("edges=%o", edges);
 
         this.game.add.image(-this.game.width/2, - this.game.height/2, walkMap);
+
+        this.walkNodes = nodes;
+        this.walkEdges = edges;
 
         // -- pathfinding
 
@@ -302,11 +318,65 @@ var p = GameState.prototype;
         }
         this.game.add.image(-this.game.width/2, -this.game.world.height/2, bitmap);
 
+        // -- 
+        this.player = this.game.add.sprite(-this.game.width/2+startTileX*tileWidth+tileWidth/2, -this.game.height/2+startTileY*tileHeight+tileHeight/2, "player");
+        this.player.anchor.set(0.5, 1);
+        this.game.physics.arcade.enable(this.player);
+        
+
     };
 
     // @phaser
     p.update = function() {
-       
+        var tileWidth = 32;
+        var tileHeight = 32;
+
+        var tilesX = this.game.world.width/tileWidth;
+        var tilesY = this.game.world.height/tileHeight;
+
+        var endTileX = 17;
+        var endTileY = 11;
+
+        var endIndex = endTileY * tilesX + endTileX;
+
+        // get player position
+        var playerTileY = Math.floor((this.player.y + this.game.height/2) / tileWidth);
+        var playerTileX = Math.floor((this.player.x + this.game.width/2) / tileHeight);
+
+        var playerTileIndex = playerTileY * tilesX + playerTileX;
+        var path = this.astar(playerTileIndex, endIndex, this.walkNodes, this.walkEdges);
+
+        // console.log("update(), path(%s, %s)= %o", playerTileIndex, endIndex, path);
+
+        var targetIndex = path[0];
+        if (path.length > 1) {
+            targetIndex = path[1];
+        }
+        else {
+            targetIndex = path[0];
+        }
+
+        var targetTileX = targetIndex % tilesX;
+        var targetTileY = Math.floor(targetIndex / tilesX);
+        var targetX = targetTileX * tileWidth;
+        var targetY = targetTileY * tileHeight;
+
+        var targetWorldX = -this.game.width/2 + targetX + tileWidth/2;
+        var targetWorldY = -this.game.height/2+ targetY + tileHeight/2;
+
+        if (Phaser.Math.fuzzyEqual(targetWorldX, this.player.x, 8)) {
+            this.player.x = targetWorldX;
+        }
+
+        if (Phaser.Math.fuzzyEqual(targetWorldY, this.player.y, 8)) {
+            this.player.y = targetWorldY;
+        }
+        if (!(this.player.x == targetWorldX && this.player.y == targetWorldY)) {
+            this.game.physics.arcade.moveToXY(this.player, targetWorldX, targetWorldY, 150);
+        }
+
+        
+            
     };
 
     
