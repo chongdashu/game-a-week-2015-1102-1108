@@ -19,6 +19,7 @@ var p = GameState.prototype;
 
     p.walkNodes = null;
     p.walkEdges = null;
+    p.walkMap = null;
 
     // @phaser
     p.preload = function() {
@@ -171,8 +172,10 @@ var p = GameState.prototype;
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
+        this.map = map;
 
         var walkMap = new Phaser.BitmapData(this.game, "walkable", this.game.world.width, this.game.world.height);
+        this.walkMap = walkMap;
 
         var tileWidth = 32;
         var tileHeight = 32;
@@ -200,16 +203,8 @@ var p = GameState.prototype;
 
                 var left = tileWidth*tileX;
                 var top =  tileHeight*tileY;
-
-                if (i == startIndex) {
-                    walkMap.context.fillStyle = "#0000AA";
-                }
-                else if (i == endIndex) {
-                    walkMap.context.fillStyle = "#AA0000";
-                }
-                else {
-                    walkMap.context.fillStyle = "rgba(99, 99, 99, 0.5)";
-                }
+  
+                walkMap.context.fillStyle = "rgba(99, 99, 99, 0.5)";
                 
                 walkMap.context.fillRect(left, top, tileWidth, tileHeight);
                 walkMap.context.rect(left, top, tileWidth, tileHeight);
@@ -250,35 +245,7 @@ var p = GameState.prototype;
 
         var path = this.astar(startIndex, endIndex, nodes, edges);
 
-        for (var k=0; k < path.length-1; k++) {
-            var nodeIndex = path[k];
-
-            var nodeTileY = Math.floor(nodeIndex / tilesX);
-            var nodeTileX = Math.floor(nodeIndex % tilesX);
-
-            var nodeX = tileWidth * nodeTileX;
-            var nodeY = tileHeight * nodeTileY;
-
-            var nextIndex = path[k+1];
-            var nextTileY = Math.floor(nextIndex / tilesX);
-            var nextTileX = Math.floor(nextIndex % tilesX);
-
-            var nextX = tileWidth * nextTileX;
-            var nextY = tileHeight * nextTileY;
-
-            var r = Math.floor((k / (path.length-1))*255);
-            var g = Math.floor((1-(k / (path.length-1)))*255);
-
-            console.log("k=%s, r=%s, g=%s", k, r, g);
-
-            walkMap.context.beginPath();
-            walkMap.context.strokeStyle = 'rgba(' + r + ', ' + g + ', 0, 1.0)';
-            console.log(walkMap.context.strokeStyle);
-            walkMap.context.moveTo(nodeX + tileWidth/2, nodeY + tileHeight/2);
-            walkMap.context.lineTo(nextX + tileWidth/2, nextY + tileHeight/2);
-            walkMap.context.stroke();
-        }
-
+        
         console.log("startIndex=%s", startIndex);
         console.log("endIndex=%s", endIndex);
 
@@ -296,7 +263,10 @@ var p = GameState.prototype;
         this.walkEdges = edges;
 
         // -- pathfinding
-
+        if (!this.pathMap) {
+            this.pathMap = new Phaser.BitmapData(this.game, "path", this.game.world.width, this.game.world.height);
+            this.game.add.image(-this.game.width/2, - this.game.height/2, this.pathMap);
+        }
 
         // -- grid
 
@@ -334,17 +304,35 @@ var p = GameState.prototype;
         var tilesX = this.game.world.width/tileWidth;
         var tilesY = this.game.world.height/tileHeight;
 
-        var endTileX = 17;
-        var endTileY = 11;
+        if (!this.endTileX) {
+            this.endTileX = 17;
+        }
+        if (!this.endTileY) {
+            this.endTileY = 11;
+        }
+
+        if (this.game.input.activePointer.isDown) {
+
+            var mouseTileX = Math.floor((this.game.width/2 + this.game.input.activePointer.worldX)/tileWidth);
+            var mouseTileY = Math.floor((this.game.height/2 + this.game.input.activePointer.worldY)/tileHeight);
+
+            console.error("pointer [%s, %s] [%s, %s]", this.game.input.activePointer.x, this.game.input.activePointer.y, mouseTileX, mouseTileY);
+            this.endTileX = mouseTileX;
+            this.endTileY = mouseTileY;
+        }
+
+        var endTileX = this.endTileX;
+        var endTileY = this.endTileY;
 
         var endIndex = endTileY * tilesX + endTileX;
 
         // get player position
-        var playerTileY = Math.floor((this.player.y + this.game.height/2) / tileWidth);
-        var playerTileX = Math.floor((this.player.x + this.game.width/2) / tileHeight);
+        var playerTileY = Math.floor((this.player.y + this.game.height/2) / tileHeight);
+        var playerTileX = Math.floor((this.player.x + this.game.width/2) / tileWidth);
 
         var playerTileIndex = playerTileY * tilesX + playerTileX;
         var path = this.astar(playerTileIndex, endIndex, this.walkNodes, this.walkEdges);
+        this.path = path;
 
         // console.log("update(), path(%s, %s)= %o", playerTileIndex, endIndex, path);
 
@@ -355,6 +343,69 @@ var p = GameState.prototype;
         else {
             targetIndex = path[0];
         }
+
+        this.pathMap.clear();
+
+        if (this.path) {
+
+            var startAndEnd = [[playerTileX, playerTileY], [endTileX, endTileY]];
+
+            for (var i=0; i < startAndEnd.length; i++) {
+
+                var tile = startAndEnd[i];
+
+                var tileX = tile[0];
+                var tileY = tile[1];
+
+                var left = tileWidth*tileX;
+                var top =  tileHeight*tileY;
+                    
+                if (i===0) {
+                    this.pathMap.context.fillStyle = "rgba(00, 200, 0, 0.5)";
+                }
+                else {
+                    this.pathMap.context.fillStyle = "rgba(200, 00, 0, 0.5)";
+                }
+                
+                this.pathMap.context.fillRect(left, top, tileWidth, tileHeight);
+                this.pathMap.context.rect(left, top, tileWidth, tileHeight);
+                this.pathMap.context.stroke();
+            }
+           
+
+            // -- draw
+            for (var k=0; k < path.length-1; k++) {
+                var nodeIndex = path[k];
+
+                var nodeTileY = Math.floor(nodeIndex / tilesX);
+                var nodeTileX = Math.floor(nodeIndex % tilesX);
+
+                var nodeX = tileWidth * nodeTileX;
+                var nodeY = tileHeight * nodeTileY;
+
+                var nextIndex = path[k+1];
+                var nextTileY = Math.floor(nextIndex / tilesX);
+                var nextTileX = Math.floor(nextIndex % tilesX);
+
+                var nextX = tileWidth * nextTileX;
+                var nextY = tileHeight * nextTileY;
+
+                var r = Math.floor((k / (path.length-1))*255);
+                var g = Math.floor((1-(k / (path.length-1)))*255);
+
+                // console.log("k=%s, r=%s, g=%s", k, r, g);
+
+                this.pathMap.context.beginPath();
+                this.pathMap.context.strokeStyle = 'rgba(' + r + ', ' + g + ', 0, 1.0)';
+                this.pathMap.context.moveTo(nodeX + tileWidth/2, nodeY + tileHeight/2);
+                this.pathMap.context.lineTo(nextX + tileWidth/2, nextY + tileHeight/2);
+                this.pathMap.context.stroke();
+            }
+        }
+
+        
+        // //
+
 
         var targetTileX = targetIndex % tilesX;
         var targetTileY = Math.floor(targetIndex / tilesX);
@@ -379,6 +430,10 @@ var p = GameState.prototype;
             
     };
 
+    p.render = function() {
+
+
+    };
     
 
 // Link
