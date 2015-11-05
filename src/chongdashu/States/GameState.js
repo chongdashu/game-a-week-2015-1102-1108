@@ -169,8 +169,8 @@ var p = GameState.prototype;
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 0, 0, 0, 1, 1, 1, 0,
             0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 1, 1, 1, 1, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 0, 0, 0, 0, 0, 0, 0, 0
         ];
         this.map = map;
 
@@ -291,16 +291,18 @@ var p = GameState.prototype;
         var frame = this.game.add.sprite(0, 0, "room1-wireframe");
         frame.anchor.set(0.5);
 
+        this.objectGroup = this.game.add.group();
+
         // -- 
-        this.player = this.game.add.sprite(-this.game.width/2+startTileX*tileWidth+tileWidth/2, -this.game.height/2+startTileY*tileHeight+tileHeight/2, "player");
+        this.player = this.objectGroup.create(-this.game.width/2+startTileX*tileWidth+tileWidth/2, -this.game.height/2+startTileY*tileHeight+tileHeight/2, "player");
         this.player.anchor.set(0.5, 1);
         this.game.physics.arcade.enable(this.player);
 
         // --
-        var ceilinglights = this.game.add.sprite(0,-game.height/2+75, "ceilinglights1");
+        var ceilinglights = this.objectGroup.create(0,-game.height/2+75, "ceilinglights1");
         ceilinglights.anchor.set(0.5);
 
-        var crate = this.game.add.sprite(-game.width/2 + 183, - game.height/2 + 390, "crate1");
+        var crate = this.objectGroup.create(-game.width/2 + 183, - game.height/2 + 390, "crate1");
         crate.anchor.set(0.5);
 
 
@@ -442,6 +444,8 @@ var p = GameState.prototype;
             this.game.physics.arcade.moveToXY(this.player, targetWorldX, targetWorldY, 150);
         }
 
+
+        this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
         
             
     };
