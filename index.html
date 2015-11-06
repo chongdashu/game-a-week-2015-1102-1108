@@ -16,8 +16,8 @@
     <script type="text/javascript" src="lib/createjs/utils/promote.js"></script>  
     <script type="text/javascript" src="lib/phaser/phaser.min.js"></script>  
 
-    <link rel="stylesheet" href="lib/bootstrap-3.3.5-dist/css/bootstrap.min.css"></link>
-    <link rel="stylesheet" href="lib/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css"></link>
+    <link rel="stylesheet" href="lib/bootstrap-3.3.5-dist/css/bootstrap-slate.min.css"></link>
+    <!-- <link rel="stylesheet" href="lib/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css"></link> -->
 
     <script type="text/javascript" src="lib/jquery-ui-1.11.4/jquery-ui.min.js"></script>
     
@@ -66,7 +66,52 @@
 
 </head>
 
-<body style="background-color: #eeeeee">
+<body style="background-color: #25282A">
+    
     <div id="game-container" style="background-color: 0x000000;"></div>
+    <div id="editor-container" style="position: absolute; top: 0px; left: 640px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>Editor</h5>
+                        </div>
+
+                         <div class="panel-body">
+                            <h6>Entities</h6>
+                        </div>
+
+                        <div class="panel-footer">
+                        
+                        </div>
+                    </div> <!-- ./panel -->
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>Properties</h5>
+                        </div>
+
+                         <div class="panel-body">
+                            
+                            <div class="input-group">
+                                <label for="property-world-x" class="input-group-addon">world X</label>
+                                <input id="property-world-x" type="input" class="form-control" readonly></input>
+                                <label for="property-world-x" class="input-group-addon">world Y</label>
+                                <input id="property-world-x" type="input" class="form-control" readonly></input>
+                            </div>
+
+                        </div>
+
+                        <div class="panel-footer">
+                        
+                        </div>
+                    </div> <!-- ./panel -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+        
 </body>
 </html>
