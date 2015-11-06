@@ -44,6 +44,7 @@ var p = PreloadState.prototype;
         // --------------------
         this.load.image("player", "res/player.png");
         this.load.image("room1-wireframe", "res/room1-wireframe.png");
+        this.load.image("room1-background", "res/room1-background.png");
         this.load.image("crate1", "res/crate1.png");
         this.load.image("door1", "res/door1.png");
         this.load.image("ceilinglights1", "res/ceilinglights1.png");

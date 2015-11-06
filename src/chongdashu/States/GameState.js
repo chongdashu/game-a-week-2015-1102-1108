@@ -163,14 +163,14 @@ var p = GameState.prototype;
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 1, 1, 1, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 1, 1, 1, 1,   1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
 
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 1, 0, 0, 0, 1, 1, 1, 0,
-            0, 1, 0, 0, 0, 0, 0, 0, 0, 0,   0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1, 1, 0, 0, 0, 0, 0, 0, 0, 0
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ];
         this.map = map;
 
@@ -186,8 +186,8 @@ var p = GameState.prototype;
         var nodes = [];
         var edges = {};
 
-        var startTileX = 1;
-        var startTileY = 11;
+        var startTileX = 18;
+        var startTileY = 10;
 
         var endTileX = 17;
         var endTileY = 11;
@@ -245,7 +245,6 @@ var p = GameState.prototype;
 
         var path = this.astar(startIndex, endIndex, nodes, edges);
 
-        
         console.log("startIndex=%s", startIndex);
         console.log("endIndex=%s", endIndex);
 
@@ -262,10 +261,13 @@ var p = GameState.prototype;
         this.walkNodes = nodes;
         this.walkEdges = edges;
 
+        var bg = this.game.add.sprite(0, 0, "room1-background");
+        bg.anchor.set(0.5);
+
         // -- pathfinding
         if (!this.pathMap) {
             this.pathMap = new Phaser.BitmapData(this.game, "path", this.game.world.width, this.game.world.height);
-            this.game.add.image(-this.game.width/2, - this.game.height/2, this.pathMap);
+            // this.game.add.image(-this.game.width/2, - this.game.height/2, this.pathMap);
         }
 
         // -- grid
@@ -286,10 +288,10 @@ var p = GameState.prototype;
             bitmap.context.lineTo(x, this.game.height);
             bitmap.context.stroke();
         }
-        this.game.add.image(-this.game.width/2, -this.game.world.height/2, bitmap);
+        // this.game.add.image(-this.game.width/2, -this.game.world.height/2, bitmap);
 
-        var frame = this.game.add.sprite(0, 0, "room1-wireframe");
-        frame.anchor.set(0.5);
+        // var frame = this.game.add.sprite(0, 0, "room1-wireframe");
+        // frame.anchor.set(0.5);
 
         this.objectGroup = this.game.add.group();
 
@@ -299,11 +301,11 @@ var p = GameState.prototype;
         this.game.physics.arcade.enable(this.player);
 
         // --
-        var ceilinglights = this.objectGroup.create(0,-game.height/2+75, "ceilinglights1");
-        ceilinglights.anchor.set(0.5);
+        // var ceilinglights = this.objectGroup.create(0,-game.height/2+75, "ceilinglights1");
+        // ceilinglights.anchor.set(0.5);
 
-        var crate = this.objectGroup.create(-game.width/2 + 183, - game.height/2 + 390, "crate1");
-        crate.anchor.set(0.5);
+        // var crate = this.objectGroup.create(-game.width/2 + 183, - game.height/2 + 390, "crate1");
+        // crate.anchor.set(0.5);
 
 
 

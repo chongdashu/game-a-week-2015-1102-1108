@@ -42,7 +42,10 @@ var p = BootState.prototype;
             this.scale.setMinMax(320, 240, 2048, 1536);
             this.scale.forceLandscape = true;
             this.scale.pageAlignHorizontally = true;
+            this.scale.pageAlignVertically = true;
+            this.scale.forceOrientation(true, false);
         }
+        
 
         // this.game.stage.backgroundColor = '#FFFFFF';
 
