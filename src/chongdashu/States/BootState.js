@@ -69,12 +69,16 @@ var p = BootState.prototype;
 
         this.load.image('preloader-frame', 'res/preloader-frame.png');
         this.load.image('preloader-bar', 'res/preloader-bar.png');
+        this.load.json('assets', 'res/assets.json');
     };
 
     // @phaser
     p.create = function() {
         Debug.log("[BootState], create()", Debug.LEVEL_ENGINE);
         this.state.start("PreloadState");
+
+        this.state.game.assets = window.assets;
+        this.state.game.assets.json = this.state.game.cache.getJSON("assets");
     };
     
 

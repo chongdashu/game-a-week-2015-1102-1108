@@ -20,9 +20,11 @@ var p = GameState.prototype;
     p.walkNodes = null;
     p.walkEdges = null;
     p.walkMap = null;
+    p.assets = null;
 
     // @phaser
     p.preload = function() {
+        this.assets = game.cache.getJSON('assets');
     };
 
     p.heuristic = function(startIndex, goalIndex) {
@@ -152,6 +154,10 @@ var p = GameState.prototype;
     p.create = function() {
 
         this.game.physics.enable(Phaser.Physics.Arcade);
+
+        // -- assets
+        
+        
 
         var map = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -422,6 +428,9 @@ var p = GameState.prototype;
                 this.pathMap.context.stroke();
             }
         }
+
+        // -- 
+        
 
         
         // //

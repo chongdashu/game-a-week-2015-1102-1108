@@ -42,12 +42,15 @@ var p = PreloadState.prototype;
 
         // Loading begins here.
         // --------------------
-        this.load.image("player", "res/player.png");
-        this.load.image("room1-wireframe", "res/room1-wireframe.png");
-        this.load.image("room1-background", "res/room1-background.png");
-        this.load.image("crate1", "res/crate1.png");
-        this.load.image("door1", "res/door1.png");
-        this.load.image("ceilinglights1", "res/ceilinglights1.png");
+        // this.load.image("player", "res/player.png");
+        // this.load.image("room1-wireframe", "res/room1-wireframe.png");
+        // this.load.image("room1-background", "res/room1-background.png");
+        // this.load.image("crate1", "res/crate1.png");
+        // this.load.image("door1", "res/door1.png");
+        // this.load.image("ceilinglights1", "res/ceilinglights1.png");
+        
+        this.game.assets.load();
+        
         
     };
 
@@ -56,6 +59,8 @@ var p = PreloadState.prototype;
         Debug.log("[PreloadState], create()", Debug.LEVEL_ENGINE);
         this.loadingBar.cropEnabled = false;
         this.state.start("MenuState");
+
+        this.game.assets.start();
         
     };
 

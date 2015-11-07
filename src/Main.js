@@ -17,6 +17,7 @@ $(document).ready(function() {
     // Create the phaser context.
     // --------------------------
     game = new Phaser.Game(GLOBAL_GAME_WIDTH, GLOBAL_GAME_HEIGHT, Phaser.AUTO, "game-container");
+    assets = new chongdashu.Assets(game);
 
     // Add all states.
     // ---------------
@@ -24,7 +25,6 @@ $(document).ready(function() {
     game.state.add("PreloadState", chongdashu.PreloadState);
     game.state.add("MenuState", chongdashu.MenuState);
     game.state.add("GameState", chongdashu.GameState);
-
 
     // Start with boot sequence.
     // -------------------------
