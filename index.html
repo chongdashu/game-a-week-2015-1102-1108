@@ -84,8 +84,17 @@
 
 <body style="background-color: #25282A">
 
+    <div class="modal">
+        <textarea class="object-properties" style="width: 640px; height: 480px; font-family: Courier New" >
+        </textarea>
+    </div>
+
     <div id="scene-controls" class="text-center" style="position: absolute; top: 12px; left: 310px; color: black;">
         <button id="button-play" class="btn"><span class="glyphicon glyphicon-play"></span></button>
+    </div>
+
+    <div id="scene-overlay" class="scene-overlay" style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 200, 0, 0.1); pointer-events: none; width: 640px; height: 480px;">
+        <label class="label label-success">Playing ...</label>
     </div>
     
     <div id="game-container" style="background-color: 0x000000;"></div>
@@ -141,23 +150,24 @@
                                         <th class="col-md-4">Name</h>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Background</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Player</td>
-                                    </tr>
+                                <tbody id="scene-objects">
+            
                                 </tbody>
                                 <tfoot>
 
+                                    <tr>
+                                        <td>
+
+                                        </td>
+                                    </tr>
                                 </tfoot>
 
                             </table>
                         </div>
 
                         <div class="panel-footer">
-                            <div class="scene-info small"></div>
+                            <button id="button-save-entities" class="button btn-xs btn-primary">Save</button>
+                            
                         </div>
                     </div> <!-- ./panel -->
 
@@ -170,15 +180,15 @@
                             
                             <div class="input-group">
                                 <label for="property-world-x" class="input-group-addon">world X</label>
-                                <input id="property-world-x" type="input" class="form-control" readonly></input>
-                                <label for="property-world-x" class="input-group-addon">world Y</label>
-                                <input id="property-world-x" type="input" class="form-control" readonly></input>
+                                <input id="property-world-x" type="input" class="form-control" ></input>
+                                <label for="property-world-y" class="input-group-addon">world Y</label>
+                                <input id="property-world-y" type="input" class="form-control" ></input>
                             </div>
 
                         </div>
 
                         <div class="panel-footer">
-                        
+                            <div class="scene-info small"></div>
                         </div>
                     </div> <!-- ./panel -->
 

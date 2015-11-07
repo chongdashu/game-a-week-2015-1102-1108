@@ -1,0 +1,8 @@
+{
+    "player": {
+        "x": -48,
+        "y": 72,
+        "body.velocity.x": 0,
+        "body.velocity.y": 0
+    }
+}

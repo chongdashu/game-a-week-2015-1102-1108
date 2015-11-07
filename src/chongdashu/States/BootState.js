@@ -70,6 +70,7 @@ var p = BootState.prototype;
         this.load.image('preloader-frame', 'res/preloader-frame.png');
         this.load.image('preloader-bar', 'res/preloader-bar.png');
         this.load.json('assets', 'res/assets.json');
+        this.load.json('objects', 'res/objects.json');
     };
 
     // @phaser
@@ -81,6 +82,7 @@ var p = BootState.prototype;
         this.state.game.assets.json = this.state.game.cache.getJSON("assets");
 
         this.state.game.scene = window.scene;
+        this.state.game.scene.sceneObjectProperties = this.state.game.cache.getJSON("objects");
     };
     
 

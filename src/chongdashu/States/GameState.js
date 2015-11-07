@@ -21,139 +21,20 @@ var p = GameState.prototype;
     p.walkEdges = null;
     p.walkMap = null;
     p.assets = null;
+    p.path = null;
 
     // @phaser
     p.preload = function() {
         this.assets = game.cache.getJSON('assets');
     };
 
-    p.heuristic = function(startIndex, goalIndex) {
-
-        var tileWidth = 32;
-        var tileHeight = 32;
-
-        var tilesX = this.game.world.width/tileWidth;
-        var tilesY = this.game.world.height/tileHeight;
-
-        var tileY1 = Math.floor(startIndex / tilesX);
-        var tileX1 = Math.floor(startIndex % tilesX);
-
-        var tileY2 = Math.floor(goalIndex / tilesX);
-        var tileX2 = Math.floor(goalIndex % tilesX);
-
-        return Math.abs(tileX1-tileX2) + Math.abs(tileY1-tileY2);
-    };
-
-    p.distance = function(startIndex, goalIndex) {
-
-        var tileWidth = 32;
-        var tileHeight = 32;
-
-        var tilesX = this.game.world.width/tileWidth;
-        var tilesY = this.game.world.height/tileHeight;
-
-        var tileY1 = Math.floor(startIndex / tilesX);
-        var tileX1 = Math.floor(startIndex % tilesX);
-
-        var tileY2 = Math.floor(goalIndex / tilesX);
-        var tileX2 = Math.floor(goalIndex % tilesX);
-
-        return Phaser.Math.distance(tileX1, tileY1, tileX2, tileY2);
-
-    };
-
-    p.astar = function(startIndex, goalIndex, nodes, edges) {
-
-
-        var closedSet = {};
-        var openSet = [startIndex];
-
-        var cameFrom = {};
-
-        var g_score = {};
-        var f_score = {};
-
-        for (var n=0; n < nodes.length; n++) {
-            g_score[nodes[n]] = 99999;
-            f_score[nodes[n]] = 99999;
-        }
-
-        g_score[startIndex] = 0;
-        f_score[startIndex] = g_score[startIndex] + this.heuristic(startIndex, goalIndex);
-
-        var iters = 0;
-        while (openSet.length > 0 && iters < 1000) {
-
-            // console.log("iters=" + iters++);
-
-            var current = null;
-
-            var lowest = 99999;
-            var lowestIndex = -1;
-            $.each(openSet, function(index, nodeIndex) {
-                var value = f_score[nodeIndex];
-                if (value < lowest) {
-                    lowest = value;
-                    lowestIndex = nodeIndex;
-                }
-            });
-
-            current = lowestIndex;
-
-            if (current == goalIndex) {
-                var c = current;
-                var total_path = [c];
-                while (c in cameFrom) {
-                    c = cameFrom[c];
-                    total_path.push(c);
-                }
-
-                total_path.reverse();
-
-                return total_path;
-            }
-
-            openSet.splice(openSet.indexOf(current), 1);
-            closedSet[current] = true;
-
-            var neighbors = [];
-            if (current in edges) {
-                neighbors = edges[current];
-            }
-
-            // console.log("neighbors[%s]=%o", current, neighbors);
-
-            for (var i=0; i < neighbors.length; i ++) {
-                var neighbor = neighbors[i];
-                if (neighbor in closedSet && closedSet[neighbor]) {
-                    continue;
-                }
-
-                var tentative_g = g_score[current] + this.distance(current, neighbor);
-                if (!(neighbor in openSet)) {
-                    openSet.push(neighbor);
-                }
-                else if (tentative_g >= g_score[neighbor]) {
-                    continue;
-                }
-
-                cameFrom[neighbor] = current;
-                g_score[neighbor] = tentative_g;
-                f_score[neighbor] = g_score[neighbor] + this.heuristic(neighbor, goalIndex);
-
-            }
-
-        }
-
-        return null;
-
-
-    };
-
     // @phaser
     p.create = function() {
 
         this.game.physics.enable(Phaser.Physics.Arcade);
+        this.path = [];
+
+        this.game.scene.create();
 
         // -- assets
 
@@ -260,13 +141,12 @@ var p = GameState.prototype;
         console.log("nodes=%o", nodes);
         console.log("edges=%o", edges);
 
-        this.game.add.image(-this.game.width/2, - this.game.height/2, walkMap);
+        // this.game.add.image(-this.game.width/2, - this.game.height/2, walkMap);
 
         this.walkNodes = nodes;
         this.walkEdges = edges;
 
-        var bg = this.game.add.sprite(0, 0, "room1-background");
-        bg.anchor.set(0.5);
+
 
         // -- pathfinding
         if (!this.pathMap) {
@@ -296,21 +176,55 @@ var p = GameState.prototype;
 
         // var frame = this.game.add.sprite(0, 0, "room1-wireframe");
         // frame.anchor.set(0.5);
-
+        // 
+        // 
+        
+        this.backgroundGroup = this.game.add.group();
         this.objectGroup = this.game.add.group();
 
         // -- 
-        this.player = this.objectGroup.create(-this.game.width/2+startTileX*tileWidth+tileWidth/2, -this.game.height/2+startTileY*tileHeight+tileHeight/2, "player");
+        var bg = this.game.make.sprite(0, 0, "room1-background");
+        bg.anchor.set(0.5);
+
+        // -- 
+        this.player = this.game.make.sprite(-this.game.width/2+startTileX*tileWidth+tileWidth/2, -this.game.height/2+startTileY*tileHeight+tileHeight/2, "player");
         this.player.anchor.set(0.5, 1);
         this.game.physics.arcade.enable(this.player);
 
+        this.game.scene.onButtonPlayCallbacks.push([this.onButtonPlayCallback, this]);
+
         // --
-        // var ceilinglights = this.objectGroup.create(0,-game.height/2+75, "ceilinglights1");
-        // ceilinglights.anchor.set(0.5);
+        this.backgroundGroup.add(bg);
 
-        // var crate = this.objectGroup.create(-game.width/2 + 183, - game.height/2 + 390, "crate1");
-        // crate.anchor.set(0.5);
+        // -- 
+        this.objectGroup.add(this.player);
+        this.game.scene.add(this.player);
+        this.game.scene.load();
 
+        // -- debug
+        this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.walkMap);
+        this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.bitmap);
+        this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.pathMap);
+
+        // --
+        
+
+    };
+
+    p.onButtonPlayCallback = function(playing) {
+        if (playing) {
+
+        }
+        else {
+
+        }
+
+        console.error(this);
+        console.error(this.path);
+        this.endTileX = -1;
+        this.endTileY = -1;
+        this.path = [];
+        this.pathMap.clear();
     };
 
     // @phaser
@@ -320,13 +234,18 @@ var p = GameState.prototype;
         }
         
         this.editorUpdate();
-        
-        
     };
 
     p.editorUpdate = function() {
         this.game.assets.update();
         this.game.scene.update();
+        this.player.inputEnabled = true;
+
+        if (this.player.input.justPressed(0)) {
+            // just clicked on an entity
+            scene.setEntity(this.player);
+        }
+
     };
 
     p.playUpdate = function() {
@@ -463,7 +382,131 @@ var p = GameState.prototype;
         this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
     };
 
+
+
     p.render = function() {
+
+
+    };
+
+    p.heuristic = function(startIndex, goalIndex) {
+
+        var tileWidth = 32;
+        var tileHeight = 32;
+
+        var tilesX = this.game.world.width/tileWidth;
+        var tilesY = this.game.world.height/tileHeight;
+
+        var tileY1 = Math.floor(startIndex / tilesX);
+        var tileX1 = Math.floor(startIndex % tilesX);
+
+        var tileY2 = Math.floor(goalIndex / tilesX);
+        var tileX2 = Math.floor(goalIndex % tilesX);
+
+        return Math.abs(tileX1-tileX2) + Math.abs(tileY1-tileY2);
+    };
+
+    p.distance = function(startIndex, goalIndex) {
+
+        var tileWidth = 32;
+        var tileHeight = 32;
+
+        var tilesX = this.game.world.width/tileWidth;
+        var tilesY = this.game.world.height/tileHeight;
+
+        var tileY1 = Math.floor(startIndex / tilesX);
+        var tileX1 = Math.floor(startIndex % tilesX);
+
+        var tileY2 = Math.floor(goalIndex / tilesX);
+        var tileX2 = Math.floor(goalIndex % tilesX);
+
+        return Phaser.Math.distance(tileX1, tileY1, tileX2, tileY2);
+
+    };
+
+    p.astar = function(startIndex, goalIndex, nodes, edges) {
+
+        var closedSet = {};
+        var openSet = [startIndex];
+
+        var cameFrom = {};
+
+        var g_score = {};
+        var f_score = {};
+
+        for (var n=0; n < nodes.length; n++) {
+            g_score[nodes[n]] = 99999;
+            f_score[nodes[n]] = 99999;
+        }
+
+        g_score[startIndex] = 0;
+        f_score[startIndex] = g_score[startIndex] + this.heuristic(startIndex, goalIndex);
+
+        var iters = 0;
+        while (openSet.length > 0 && iters < 1000) {
+
+            // console.log("iters=" + iters++);
+
+            var current = null;
+
+            var lowest = 99999;
+            var lowestIndex = -1;
+            $.each(openSet, function(index, nodeIndex) {
+                var value = f_score[nodeIndex];
+                if (value < lowest) {
+                    lowest = value;
+                    lowestIndex = nodeIndex;
+                }
+            });
+
+            current = lowestIndex;
+
+            if (current == goalIndex) {
+                var c = current;
+                var total_path = [c];
+                while (c in cameFrom) {
+                    c = cameFrom[c];
+                    total_path.push(c);
+                }
+
+                total_path.reverse();
+
+                return total_path;
+            }
+
+            openSet.splice(openSet.indexOf(current), 1);
+            closedSet[current] = true;
+
+            var neighbors = [];
+            if (current in edges) {
+                neighbors = edges[current];
+            }
+
+            // console.log("neighbors[%s]=%o", current, neighbors);
+
+            for (var i=0; i < neighbors.length; i ++) {
+                var neighbor = neighbors[i];
+                if (neighbor in closedSet && closedSet[neighbor]) {
+                    continue;
+                }
+
+                var tentative_g = g_score[current] + this.distance(current, neighbor);
+                if (!(neighbor in openSet)) {
+                    openSet.push(neighbor);
+                }
+                else if (tentative_g >= g_score[neighbor]) {
+                    continue;
+                }
+
+                cameFrom[neighbor] = current;
+                g_score[neighbor] = tentative_g;
+                f_score[neighbor] = g_score[neighbor] + this.heuristic(neighbor, goalIndex);
+
+            }
+
+        }
+
+        return null;
 
 
     };

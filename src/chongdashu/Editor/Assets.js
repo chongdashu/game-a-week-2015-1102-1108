@@ -21,7 +21,7 @@ var Assets = function(game, divId) {
 };
 var p = Assets.prototype;
 
-    p.selectedAsset = null;
+    p.selectedEntity = null;
     
     p.init = function(game, divId)
     {
@@ -59,12 +59,13 @@ var p = Assets.prototype;
         }
     };
 
+
     p.start = function() {
         
     };
 
     p.update = function() {
-
+        
     };
 
 
