@@ -1,8 +1,24 @@
 {
-    "player": {
-        "x": -48,
-        "y": 72,
+    "object_0": {
+        "x": 112,
+        "y": 73,
+        "key": "player",
         "body.velocity.x": 0,
         "body.velocity.y": 0
+    },
+    "object_1": {
+        "x": -43,
+        "y": 30,
+        "key": "player"
+    },
+    "object_2": {
+        "x": -130,
+        "y": 59,
+        "key": "player"
+    },
+    "object_3": {
+        "x": 222,
+        "y": 60,
+        "key": "player"
     }
 }

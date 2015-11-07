@@ -211,6 +211,15 @@ var p = GameState.prototype;
 
     };
 
+    p.onAssetAdd = function(key, x, y) {
+        console.error("onAssetAdd=%o", key);
+        var obj = this.objectGroup.create(x, y, key);
+        obj.anchor.set(0.5, 0.5);
+        this.game.scene.add(obj);
+
+        return obj;
+    };
+
     p.onButtonPlayCallback = function(playing) {
         if (playing) {
 
@@ -239,12 +248,17 @@ var p = GameState.prototype;
     p.editorUpdate = function() {
         this.game.assets.update();
         this.game.scene.update();
-        this.player.inputEnabled = true;
 
-        if (this.player.input.justPressed(0)) {
-            // just clicked on an entity
-            scene.setEntity(this.player);
-        }
+        this.objectGroup.forEach(function(object) {
+            object.inputEnabled = true;
+            if (object.input.justPressed(0)) {
+                // just clicked on an entity
+                scene.setEntity(object);
+            }
+
+        }, this);
+
+        
 
     };
 

@@ -26,6 +26,7 @@ var p = Scene.prototype;
     p.playing = false;
     p.selectedEntity = null;
     p.onButtonPlayCallbacks = [];
+    p.sceneObjectCounter = 0;
 
     p.init = function(game, divId)
     {
@@ -49,6 +50,7 @@ var p = Scene.prototype;
         var self = this;
 
         this.playing = false;
+        this.sceneObjectCounter = 0;
 
         this.refreshControls();
 
@@ -111,6 +113,9 @@ var p = Scene.prototype;
     };
 
     p.setEntity = function(entity) {
+
+        this.unsetEntity();
+
         this.selectedEntity = entity;
 
         this.pointerDeltaX = this.game.input.activePointer.worldX - this.selectedEntity.x;
@@ -147,43 +152,77 @@ var p = Scene.prototype;
     p.updateProperties = function() {
         $("#property-world-x").val(this.selectedEntity.x);
         $("#property-world-y").val(this.selectedEntity.y);
-        $("#scene-objects").find("tr[key="+this.selectedEntity.key+"]").addClass("success");
+        $("#scene-objects").find("tr[uid="+this.selectedEntity.uid+"]").addClass("success");
+    };
+
+    p.onAssetAdd = function(info, x, y) {
+        var state = this.game.state.getCurrentState();
+        if (state.onAssetAdd) {
+            state.onAssetAdd(info["name"], -this.game.width/2+x, -this.game.height/2+y);
+        }
     };
 
     p.add = function(entity) {
-        var tr = $('<tr class="scene-object"><td class="object-attribute-name"></td></tr>');
+        var tr = $('<tr class="scene-object"><td class="object-uid"></td><td class="object-key"></td></tr>');
+        var uid = "object_" + this.sceneObjectCounter++;
+
+        tr.attr("uid", uid);
         tr.attr("key", entity["key"]);
         console.log(entity);
-        tr.find("td").html(entity.key);
+
+        tr.find(".object-uid").html(uid);
+        tr.find(".object-key").html(entity.key);
+
         $("#scene-objects").append(tr);
-        this.sceneObjects[entity.key] = entity;
+        this.sceneObjects[uid] = entity;
+        entity.uid = uid;
     };
 
     p.save = function() {
         var self = this;
-        $.each(this.sceneObjects, function(key, entity) {
-            if (!(key in self.sceneObjectProperties)) {
-                self.sceneObjectProperties[key] = {};
+        $.each(this.sceneObjects, function(uid, entity) {
+            if (!(uid in self.sceneObjectProperties)) {
+                self.sceneObjectProperties[uid] = {};
             }
-            console.error("save(), key=%s", key);
-            self.sceneObjectProperties[key].x = entity.x;
-            self.sceneObjectProperties[key].y = entity.y;
-            self.sceneObjectProperties[key]["body.velocity.x"] = entity.body.velocity.x;
-            self.sceneObjectProperties[key]["body.velocity.y"] = entity.body.velocity.y;
+            console.error("save(), uid=%s", uid);
+            self.sceneObjectProperties[uid].x = entity.x;
+            self.sceneObjectProperties[uid].y = entity.y;
+            self.sceneObjectProperties[uid]["key"] = entity.key;
+            if (entity.body) {
+                self.sceneObjectProperties[uid]["body.velocity.x"] = entity.body.velocity.x;
+                self.sceneObjectProperties[uid]["body.velocity.y"] = entity.body.velocity.y;
+            }
+            
         });
     };
 
     p.load = function() {
         var self = this;
-        $.each(this.sceneObjects, function(key, entity) {
-            if (!(key in self.sceneObjectProperties)) {
+        var state = this.game.state.getCurrentState();
+        $.each(this.sceneObjectProperties, function(id, properties) {
+
+            if (state.onAssetAdd && !(id in self.sceneObjects)) {
+                var obj = state.onAssetAdd(properties["key"], properties["x"], properties["y"]);
+                obj.uid = id;
+                self.sceneObjects[id] = obj;
+            }
+            
+            
+        });
+
+        $.each(this.sceneObjects, function(id, entity) {
+            if (!(id in self.sceneObjectProperties)) {
                 return;
             }
-            console.error("load(), key=%s", key);
-            self.sceneObjects[key].x = self.sceneObjectProperties[key]["x"];
-            self.sceneObjects[key].y = self.sceneObjectProperties[key]["y"];
-            self.sceneObjects[key].body.velocity.x = self.sceneObjectProperties[key]["body.velocity.x"];
-            self.sceneObjects[key].body.velocity.y = self.sceneObjectProperties[key]["body.velocity.y"];
+            console.error("load(), id=%s", id);
+            self.sceneObjects[id]["uid"] = id;
+            self.sceneObjects[id].x = self.sceneObjectProperties[id]["x"];
+            self.sceneObjects[id].y = self.sceneObjectProperties[id]["y"];
+            self.sceneObjects[id]["key"] = entity.key;
+            if (self.sceneObjects[id].body) {
+                self.sceneObjects[id].body.velocity.x = self.sceneObjectProperties[id]["body.velocity.x"];
+                self.sceneObjects[id].body.velocity.y = self.sceneObjectProperties[id]["body.velocity.y"];
+            }
         });
     };
 
@@ -207,7 +246,7 @@ var p = Scene.prototype;
             }
         }
 
-        
+
 
     };
 

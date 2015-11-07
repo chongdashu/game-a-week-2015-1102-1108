@@ -22,6 +22,7 @@ var Assets = function(game, divId) {
 var p = Assets.prototype;
 
     p.selectedEntity = null;
+    p.images = {};
     
     p.init = function(game, divId)
     {
@@ -33,7 +34,6 @@ var p = Assets.prototype;
         }
 
         this.container = $("#"+divId).get(0);
-        this.images = $(this.container).find(".assets-images");
     };
 
     p.setJson = function(assetsJson) {
@@ -56,11 +56,14 @@ var p = Assets.prototype;
                     $('<img class="thumbnail asset-image"></img>')
                         .attr("src", asset["path"])
                         .attr("name", asset["name"])));
+
+            this.images[asset["name"]] = asset;
         }
     };
 
-    p.onAddEntity = function() {
-        console.error("onAddEntity()");
+    p.onAddEntity = function(x, y) {
+        var info = this.images[$(this.selectedEntity).attr("name")];
+        this.game.scene.onAssetAdd(info, x, y);
     };
 
 
@@ -72,7 +75,12 @@ var p = Assets.prototype;
             console.error("mousedown");
             $(this).addClass("float");
 
-            var img = $("<img></img>").attr("src", $(this).attr("src"));
+            var img = $("<img></img>")
+                .attr("src", $(this).attr("src"))
+                .attr("name", $(this).attr("name"));
+
+            console.error($(img).attr("name"));
+
             self.selectedEntity = img;
 
             $(img).css({
@@ -81,8 +89,6 @@ var p = Assets.prototype;
                 position: "absolute"
             });
 
-
-            
             $("body").append(img);
         });
 
@@ -91,10 +97,11 @@ var p = Assets.prototype;
             if (self.selectedEntity) {
 
                 if (event.clientX >= 0 && event.clientX <= 640 && event.clientY >= 0 && event.clientY <= 480 ) {
-                    self.onAddEntity();
+                    self.onAddEntity(event.clientX, event.clientY);
                 }
 
                 $(self.selectedEntity).remove();
+                self.selectedEntity = null;
             }
         });
 
