@@ -20,6 +20,8 @@ var Assets = function(game, divId) {
     this.init(game, divId);
 };
 var p = Assets.prototype;
+
+    p.selectedAsset = null;
     
     p.init = function(game, divId)
     {
@@ -58,6 +60,10 @@ var p = Assets.prototype;
     };
 
     p.start = function() {
+        
+    };
+
+    p.update = function() {
 
     };
 

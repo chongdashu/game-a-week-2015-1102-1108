@@ -79,6 +79,8 @@ var p = BootState.prototype;
 
         this.state.game.assets = window.assets;
         this.state.game.assets.json = this.state.game.cache.getJSON("assets");
+
+        this.state.game.scene = window.scene;
     };
     
 

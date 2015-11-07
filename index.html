@@ -31,6 +31,8 @@
     <!-- Main -->
     <script type="text/javascript" src="src/Main.js"></script>
     <script type="text/javascript" src="src/chongdashu/Editor/Assets.js"></script>
+    <script type="text/javascript" src="src/chongdashu/Editor/Scene.js"></script>
+
 
     <!-- States -->
     <script type="text/javascript" src="src/chongdashu/States/BootState.js"></script>
@@ -71,12 +73,20 @@
             height: 50px;
             width: 50px;
         }
+
+        .float {
+            position: absolute;
+        }
     </style>
     
 
 </head>
 
 <body style="background-color: #25282A">
+
+    <div id="scene-controls" class="text-center" style="position: absolute; top: 12px; left: 310px; color: black;">
+        <button id="button-play" class="btn"><span class="glyphicon glyphicon-play"></span></button>
+    </div>
     
     <div id="game-container" style="background-color: 0x000000;"></div>
     
@@ -100,7 +110,7 @@
                             </div>
 
                             <div class="panel-footer">
-                            
+                                
                             </div>
                         </div> <!-- ./panel -->
                     </div> <!-- #/assets-container -->
@@ -108,12 +118,12 @@
                 </div> <!-- /.col-md-12 -->
 
             </div> <!-- /.row -->
-
-                
     </div>
+
+
         
     
-    <div id="editor-container" style="position: absolute; top: 0px; left: 640px;">
+    <div id="scene-container" style="position: absolute; top: 0px; left: 640px;">
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
@@ -147,7 +157,7 @@
                         </div>
 
                         <div class="panel-footer">
-                        
+                            <div class="scene-info small"></div>
                         </div>
                     </div> <!-- ./panel -->
 

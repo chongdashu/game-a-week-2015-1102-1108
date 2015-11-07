@@ -156,8 +156,6 @@ var p = GameState.prototype;
         this.game.physics.enable(Phaser.Physics.Arcade);
 
         // -- assets
-        
-        
 
         var map = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -313,14 +311,25 @@ var p = GameState.prototype;
         // var crate = this.objectGroup.create(-game.width/2 + 183, - game.height/2 + 390, "crate1");
         // crate.anchor.set(0.5);
 
-
-
-        
-
     };
 
     // @phaser
     p.update = function() {
+        if (this.game.scene.playing) {
+            this.playUpdate();
+        }
+        
+        this.editorUpdate();
+        
+        
+    };
+
+    p.editorUpdate = function() {
+        this.game.assets.update();
+        this.game.scene.update();
+    };
+
+    p.playUpdate = function() {
         var tileWidth = 32;
         var tileHeight = 32;
 
@@ -431,11 +440,6 @@ var p = GameState.prototype;
 
         // -- 
         
-
-        
-        // //
-
-
         var targetTileX = targetIndex % tilesX;
         var targetTileY = Math.floor(targetIndex / tilesX);
         var targetX = targetTileX * tileWidth;
@@ -457,8 +461,6 @@ var p = GameState.prototype;
 
 
         this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
-        
-            
     };
 
     p.render = function() {
