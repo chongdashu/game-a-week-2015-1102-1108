@@ -59,13 +59,58 @@ var p = Assets.prototype;
         }
     };
 
+    p.onAddEntity = function() {
+        console.error("onAddEntity()");
+    };
 
-    p.start = function() {
-        
+
+    p.create = function() {
+        var self = this;
+
+        $(".asset-image").on("mousedown", function(event) {
+            event.preventDefault();
+            console.error("mousedown");
+            $(this).addClass("float");
+
+            var img = $("<img></img>").attr("src", $(this).attr("src"));
+            self.selectedEntity = img;
+
+            $(img).css({
+                top: event.clientY - $(self.selectedEntity).get(0).height/2,
+                left: event.clientX - $(self.selectedEntity).get(0).width/2,
+                position: "absolute"
+            });
+
+
+            
+            $("body").append(img);
+        });
+
+        $("body").on("mouseup", function(event) {
+            console.error("mouseup");
+            if (self.selectedEntity) {
+
+                if (event.clientX >= 0 && event.clientX <= 640 && event.clientY >= 0 && event.clientY <= 480 ) {
+                    self.onAddEntity();
+                }
+
+                $(self.selectedEntity).remove();
+            }
+        });
+
+
+        $(window).on("mousemove", function(event) {
+            if (self.selectedEntity) {
+                $(self.selectedEntity).css({
+                    top: event.clientY - $(self.selectedEntity).get(0).height/2,
+                    left: event.clientX - $(self.selectedEntity).get(0).width/2,
+                    position: "absolute"
+                });
+            }
+        });
     };
 
     p.update = function() {
-        
     };
 
 

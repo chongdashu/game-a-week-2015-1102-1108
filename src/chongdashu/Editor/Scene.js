@@ -77,6 +77,8 @@ var p = Scene.prototype;
             $(".modal .object-properties").focus();
             $(".modal .object-properties").select();
         });
+
+
         
     };
 
@@ -204,6 +206,8 @@ var p = Scene.prototype;
                 this.updateProperties();
             }
         }
+
+        
 
     };
 

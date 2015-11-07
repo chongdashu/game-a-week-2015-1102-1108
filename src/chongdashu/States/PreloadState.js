@@ -60,7 +60,7 @@ var p = PreloadState.prototype;
         this.loadingBar.cropEnabled = false;
         this.state.start("MenuState");
 
-        this.game.assets.start();
+        this.game.assets.create();
         
     };
 
