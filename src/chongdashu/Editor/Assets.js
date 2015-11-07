@@ -72,14 +72,11 @@ var p = Assets.prototype;
 
         $(".asset-image").on("mousedown", function(event) {
             event.preventDefault();
-            console.error("mousedown");
             $(this).addClass("float");
 
             var img = $("<img></img>")
                 .attr("src", $(this).attr("src"))
                 .attr("name", $(this).attr("name"));
-
-            console.error($(img).attr("name"));
 
             self.selectedEntity = img;
 
@@ -93,7 +90,6 @@ var p = Assets.prototype;
         });
 
         $("body").on("mouseup", function(event) {
-            console.error("mouseup");
             if (self.selectedEntity) {
 
                 if (event.clientX >= 0 && event.clientX <= 640 && event.clientY >= 0 && event.clientY <= 480 ) {

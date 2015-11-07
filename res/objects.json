@@ -4,21 +4,29 @@
         "y": 73,
         "key": "player",
         "body.velocity.x": 0,
-        "body.velocity.y": 0
+        "body.velocity.y": 0,
+        "bodyEnabled": true
     },
     "object_1": {
-        "x": -43,
+        "x": -42.16666666666667,
         "y": 30,
-        "key": "player"
+        "key": "player",
+        "body.velocity.x": 50,
+        "body.velocity.y": 0,
+        "bodyEnabled": false
     },
     "object_2": {
         "x": -130,
         "y": 59,
-        "key": "player"
+        "key": "player",
+        "bodyEnabled": false
     },
     "object_3": {
-        "x": 222,
-        "y": 60,
-        "key": "player"
+        "x": 218.33333333333334,
+        "y": 65,
+        "key": "player",
+        "body.velocity.x": 100,
+        "body.velocity.y": 0,
+        "bodyEnabled": false
     }
 }

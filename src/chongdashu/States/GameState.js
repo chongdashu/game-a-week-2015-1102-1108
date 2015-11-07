@@ -212,7 +212,6 @@ var p = GameState.prototype;
     };
 
     p.onAssetAdd = function(key, x, y) {
-        console.error("onAssetAdd=%o", key);
         var obj = this.objectGroup.create(x, y, key);
         obj.anchor.set(0.5, 0.5);
         this.game.scene.add(obj);
@@ -228,8 +227,6 @@ var p = GameState.prototype;
 
         }
 
-        console.error(this);
-        console.error(this.path);
         this.endTileX = -1;
         this.endTileY = -1;
         this.path = [];
@@ -239,7 +236,11 @@ var p = GameState.prototype;
     // @phaser
     p.update = function() {
         if (this.game.scene.playing) {
+            this.game.physics.arcade.isPaused = false;
             this.playUpdate();
+        }
+        else {
+            this.game.physics.arcade.isPaused = true;
         }
         
         this.editorUpdate();

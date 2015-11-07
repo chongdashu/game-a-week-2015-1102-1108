@@ -72,6 +72,27 @@ var p = Scene.prototype;
             }
         });
 
+        $("#property-body-velocity-x").on("change", function(event) {
+            if (self.selectedEntity) {
+                self.selectedEntity.body.velocity.x = parseInt($(this).val(), 10);
+            }
+        });
+
+        $("#property-body-velocity-y").on("change", function(event) {
+            if (self.selectedEntity) {
+                self.selectedEntity.body.velocity.y = parseInt($(this).val(), 10);
+            }
+        });
+
+        $("#property-body-enabled").on("change", function(event) {
+            if ($(event.target).prop("checked")) {
+                if (self.selectedEntity && (!self.selectedEntity.body || !self.selectedEntity.body.enable)) {
+                    self.game.physics.arcade.enable(self.selectedEntity);
+                }
+                self.updateProperties();
+            }
+        });
+
         $("#button-save-entities").on("click", function() {
             self.save();
             $(".modal").modal();
@@ -146,13 +167,32 @@ var p = Scene.prototype;
         }
         else {
             this.load();
+            this.updateProperties();
         }
     };
 
     p.updateProperties = function() {
-        $("#property-world-x").val(this.selectedEntity.x);
-        $("#property-world-y").val(this.selectedEntity.y);
-        $("#scene-objects").find("tr[uid="+this.selectedEntity.uid+"]").addClass("success");
+
+        if (this.selectedEntity) {
+            $(".panel-properties input").prop("disabled", false);
+            $("#property-world-x").val(this.selectedEntity.x);
+            $("#property-world-y").val(this.selectedEntity.y);
+
+
+            if (this.selectedEntity.body && this.selectedEntity.body.enable) {
+                $("#property-body-enabled").prop("checked", true);
+                $("#property-body-velocity-x").val(this.selectedEntity.body.velocity.x);
+                $("#property-body-velocity-y").val(this.selectedEntity.body.velocity.y);
+            }
+            else {
+                $("#property-body-enabled").prop("checked", false);
+                $("#property-body-velocity-y").prop("disabled", true);
+                $("#property-body-velocity-x").prop("disabled", true);
+            }
+            $("#scene-objects").find("tr[uid="+this.selectedEntity.uid+"]").addClass("success");
+        }
+
+       
     };
 
     p.onAssetAdd = function(info, x, y) {
@@ -184,10 +224,10 @@ var p = Scene.prototype;
             if (!(uid in self.sceneObjectProperties)) {
                 self.sceneObjectProperties[uid] = {};
             }
-            console.error("save(), uid=%s", uid);
             self.sceneObjectProperties[uid].x = entity.x;
             self.sceneObjectProperties[uid].y = entity.y;
             self.sceneObjectProperties[uid]["key"] = entity.key;
+            self.sceneObjectProperties[uid]["bodyEnabled"] = entity.body !== null;
             if (entity.body) {
                 self.sceneObjectProperties[uid]["body.velocity.x"] = entity.body.velocity.x;
                 self.sceneObjectProperties[uid]["body.velocity.y"] = entity.body.velocity.y;
@@ -207,23 +247,37 @@ var p = Scene.prototype;
                 self.sceneObjects[id] = obj;
             }
             
-            
         });
 
         $.each(this.sceneObjects, function(id, entity) {
             if (!(id in self.sceneObjectProperties)) {
                 return;
             }
-            console.error("load(), id=%s", id);
             self.sceneObjects[id]["uid"] = id;
             self.sceneObjects[id].x = self.sceneObjectProperties[id]["x"];
             self.sceneObjects[id].y = self.sceneObjectProperties[id]["y"];
             self.sceneObjects[id]["key"] = entity.key;
-            if (self.sceneObjects[id].body) {
+
+            if (self.sceneObjectProperties[id]["bodyEnabled"]) {
+                // it was enabled earlier, check
+                if (!self.sceneObjects[id].body || !self.sceneObjects[id].body.enable) {
+                    self.game.physics.arcade.enable(self.sceneObjects[id].body);
+                    self.sceneObjects[id].body.enable = true;
+                }
+            }
+            else {
+                if (self.sceneObjects[id].body && self.sceneObjects[id].body.enable) {
+                    self.sceneObjects[id].body.enable = false;
+                }
+            }
+
+            if (self.sceneObjects[id].body && self.sceneObjects[id].body.enable) {
                 self.sceneObjects[id].body.velocity.x = self.sceneObjectProperties[id]["body.velocity.x"];
                 self.sceneObjects[id].body.velocity.y = self.sceneObjectProperties[id]["body.velocity.y"];
             }
         });
+    
+
     };
 
     p.update = function() {
@@ -244,7 +298,12 @@ var p = Scene.prototype;
                 self.selectedEntity.y = this.game.input.activePointer.worldY - this.pointerDeltaY;
                 this.updateProperties();
             }
+            
         }
+        else {
+            $(".panel-properties input").prop("disabled", true);
+        }
+        
 
 
 
