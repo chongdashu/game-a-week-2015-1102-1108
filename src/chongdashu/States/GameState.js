@@ -190,6 +190,7 @@ var p = GameState.prototype;
         this.player = this.game.make.sprite(-this.game.width/2+startTileX*tileWidth+tileWidth/2, -this.game.height/2+startTileY*tileHeight+tileHeight/2, "player");
         this.player.anchor.set(0.5, 1);
         this.game.physics.arcade.enable(this.player);
+        this.player.zIndex = 100;
 
         this.game.scene.onButtonPlayCallbacks.push([this.onButtonPlayCallback, this]);
 
@@ -245,6 +246,14 @@ var p = GameState.prototype;
         }
         else {
             this.game.physics.arcade.isPaused = true;
+            this.objectGroup.forEach(function(object) {
+                object.inputEnabled = true;
+                if (object.input.justPressed(0)) {
+                    // just clicked on an entity
+                    scene.setEntity(object);
+                }
+
+            }, this);
         }
         
         this.editorUpdate();
@@ -253,17 +262,9 @@ var p = GameState.prototype;
     p.editorUpdate = function() {
         this.game.assets.update();
         this.game.scene.update();
+        this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+        this.objectGroup.customSort(this.sortZIndex, this);
 
-        this.objectGroup.forEach(function(object) {
-            object.inputEnabled = true;
-            if (object.input.justPressed(0)) {
-                // just clicked on an entity
-                scene.setEntity(object);
-            }
-
-        }, this);
-
-        
 
     };
 
@@ -398,7 +399,15 @@ var p = GameState.prototype;
         }
 
 
-        // this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+
+        
+    };
+
+    p.sortZIndex = function (spriteA, spriteB) {
+        var aZ = (typeof spriteA.zIndex == "undefined" || spriteA.zIndex === null) ? 0 : spriteA.zIndex;
+        var bZ = (typeof spriteB.zIndex == "undefined" || spriteB.zIndex === null) ? 0 : spriteB.zIndex;
+
+        return aZ-bZ;
     };
 
 

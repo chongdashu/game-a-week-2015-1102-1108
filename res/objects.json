@@ -23,11 +23,12 @@
         "x": -205,
         "y": -38,
         "key": "left-box",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "zIndex": 1
     },
     "object_4": {
-        "x": 104,
-        "y": 6,
+        "x": 106,
+        "y": 7,
         "key": "right-table",
         "bodyEnabled": false
     },
@@ -41,7 +42,8 @@
         "x": 151,
         "y": -43,
         "key": "right-box",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "zIndex": 1
     },
     "object_7": {
         "x": -109,
@@ -53,6 +55,18 @@
         "x": 141,
         "y": -208,
         "key": "right-light",
+        "bodyEnabled": false
+    },
+    "object_9": {
+        "x": 244,
+        "y": 87,
+        "key": "carpet",
+        "bodyEnabled": false
+    },
+    "object_10": {
+        "x": 286,
+        "y": -1,
+        "key": "door-closed",
         "bodyEnabled": false
     }
 }

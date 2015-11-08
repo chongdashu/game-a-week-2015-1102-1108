@@ -72,6 +72,12 @@ var p = Scene.prototype;
             }
         });
 
+        $("#property-world-z").on("change", function(event) {
+            if (self.selectedEntity) {
+                self.selectedEntity.zIndex = parseInt($(this).val(), 10);
+            }
+        });
+
         $("#property-body-velocity-x").on("change", function(event) {
             if (self.selectedEntity) {
                 self.selectedEntity.body.velocity.x = parseInt($(this).val(), 10);
@@ -121,10 +127,13 @@ var p = Scene.prototype;
                 self.unsetEntity();
             }
             if (event.keyCode == Phaser.Keyboard.BACKSPACE) {
-                var entity = self.unsetEntity();
-                if (entity) {
-                    self.remove(entity);
+                if (!$("input").is(":focus")) {
+                    var entity = self.unsetEntity();
+                    if (entity) {
+                        self.remove(entity);
+                    }
                 }
+               
             }
         };
     };
@@ -228,6 +237,7 @@ var p = Scene.prototype;
             $(".panel-properties input").prop("disabled", false);
             $("#property-world-x").val(this.selectedEntity.x);
             $("#property-world-y").val(this.selectedEntity.y);
+            $("#property-world-z").val(typeof this.selectedEntity.zIndex == "undefined" || this.selectedEntity.zIndex === null ? 0 : this.selectedEntity.zIndex);
 
 
             if (this.selectedEntity.body && this.selectedEntity.body.enable) {
@@ -261,6 +271,7 @@ var p = Scene.prototype;
             }
             self.sceneObjectProperties[uid].x = entity.x;
             self.sceneObjectProperties[uid].y = entity.y;
+            self.sceneObjectProperties[uid].zIndex = entity.zIndex;
             self.sceneObjectProperties[uid]["key"] = entity.key;
             self.sceneObjectProperties[uid]["bodyEnabled"] = entity.body !== null;
             if (entity.body) {
@@ -291,6 +302,7 @@ var p = Scene.prototype;
             self.sceneObjects[id]["uid"] = id;
             self.sceneObjects[id].x = self.sceneObjectProperties[id]["x"];
             self.sceneObjects[id].y = self.sceneObjectProperties[id]["y"];
+            self.sceneObjects[id].zIndex = self.sceneObjectProperties[id]["zIndex"];
             self.sceneObjects[id]["key"] = entity.key;
 
             if (self.sceneObjectProperties[id]["bodyEnabled"]) {
@@ -331,6 +343,8 @@ var p = Scene.prototype;
             if (self.selectedEntity.input.pointerDown(this.game.input.activePointer.id)) {
                 self.selectedEntity.x = this.game.input.activePointer.worldX - this.pointerDeltaX;
                 self.selectedEntity.y = this.game.input.activePointer.worldY - this.pointerDeltaY;
+                // console.log("move, (%s, %s)", self.selectedEntity.x, self.selectedEntity.y);
+
                 this.updateProperties();
             }
             
