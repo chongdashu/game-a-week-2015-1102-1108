@@ -211,6 +211,10 @@ var p = GameState.prototype;
 
     };
 
+    p.onEntityRemove = function(entity) {
+        this.objectGroup.remove(entity);
+    };
+
     p.onAssetAdd = function(key, x, y) {
         var obj = this.objectGroup.create(x, y, key);
         obj.anchor.set(0.5, 0.5);

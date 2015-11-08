@@ -120,17 +120,68 @@ var p = Scene.prototype;
             if (event.keyCode == Phaser.Keyboard.ESC) {
                 self.unsetEntity();
             }
+            if (event.keyCode == Phaser.Keyboard.BACKSPACE) {
+                var entity = self.unsetEntity();
+                if (entity) {
+                    self.remove(entity);
+                }
+            }
         };
+    };
+
+    p.remove = function(entity) {
+        var obj = $(".scene-object[uid=" + entity.uid + "]");
+        obj.remove();
+        var state = this.game.state.getCurrentState();
+        if (state.onEntityRemove) {
+            state.onEntityRemove(entity);
+        }
+
+        delete this.sceneObjects[entity.uid];
+        delete this.sceneObjectProperties[entity.uid];
+
+    };
+
+    p.getNextUid = function() {
+        var largestUid = -1;
+        $.each(this.sceneObjects, function(key, value) {
+            var uid = parseInt(key.split("object_")[1], 10);
+            largestUid = Math.max(uid, largestUid);
+        });
+
+        return largestUid+1;
+    };
+
+    p.add = function(entity) {
+        var tr = $('<tr class="scene-object"><td class="object-uid"></td><td class="object-key"></td></tr>');
+        var uid = "object_" + this.getNextUid();
+
+        this.sceneObjectCounter++;
+
+        tr.attr("uid", uid);
+        tr.attr("key", entity["key"]);
+        console.log(entity);
+
+        tr.find(".object-uid").html(uid);
+        tr.find(".object-key").html(entity.key);
+
+        $("#scene-objects").append(tr);
+        this.sceneObjects[uid] = entity;
+        entity.uid = uid;
     };
 
     p.unsetEntity = function() {
         
+        var entity = this.selectedEntity;
+
         if (this.selectedEntity) {
             this.selectedEntity.tint = 0xFFFFFF;
             this.selectedEntity = null;
         }
 
         $("#scene-objects").find("tr.success").removeClass("success");
+
+        return entity;
     };
 
     p.setEntity = function(entity) {
@@ -200,22 +251,6 @@ var p = Scene.prototype;
         if (state.onAssetAdd) {
             state.onAssetAdd(info["name"], -this.game.width/2+x, -this.game.height/2+y);
         }
-    };
-
-    p.add = function(entity) {
-        var tr = $('<tr class="scene-object"><td class="object-uid"></td><td class="object-key"></td></tr>');
-        var uid = "object_" + this.sceneObjectCounter++;
-
-        tr.attr("uid", uid);
-        tr.attr("key", entity["key"]);
-        console.log(entity);
-
-        tr.find(".object-uid").html(uid);
-        tr.find(".object-key").html(entity.key);
-
-        $("#scene-objects").append(tr);
-        this.sceneObjects[uid] = entity;
-        entity.uid = uid;
     };
 
     p.save = function() {
