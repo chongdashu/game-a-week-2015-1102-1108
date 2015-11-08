@@ -2,6 +2,15 @@
     "images" : [
         { "name" : "room1-wireframe",   "path" : "res/room1-wireframe.png"  },
         { "name" : "room1-background",  "path" : "res/room1-background.png" },
-        { "name" : "player",            "path" : "res/player.png"           }
+        { "name" : "player",            "path" : "res/player.png"           },
+        { "name" : "left-dresser",      "path" : "res/left-dresser.png"     },
+        { "name" : "left-cabinet",      "path" : "res/left-cabinet.png"     },
+        { "name" : "left-box",          "path" : "res/left-box.png"     },
+        { "name" : "right-box",         "path" : "res/right-box.png"     },
+        { "name" : "right-table",         "path" : "res/right-table.png"     },
+        { "name" : "right-cabinet",         "path" : "res/right-cabinet.png" },
+        { "name" : "right-light",         "path" : "res/right-light.png"     },
+        { "name" : "left-light",         "path" : "res/left-light.png"     },
+        { "name" : "door-closed",         "path" : "res/door-closed.png"     }
     ]
 }

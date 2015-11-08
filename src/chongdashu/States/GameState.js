@@ -398,7 +398,7 @@ var p = GameState.prototype;
         }
 
 
-        this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+        // this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
     };
 
 

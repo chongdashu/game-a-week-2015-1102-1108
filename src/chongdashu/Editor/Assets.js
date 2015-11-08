@@ -52,7 +52,7 @@ var p = Assets.prototype;
             this.game.load.image(asset["name"], asset["path"]);
 
             $(".assets-images").append(
-                $('<div class="col-md-1"></div>').append(
+                $('<div class="col-md-2"></div>').append(
                     $('<img class="thumbnail asset-image"></img>')
                         .attr("src", asset["path"])
                         .attr("name", asset["name"])));

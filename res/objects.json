@@ -6,5 +6,53 @@
         "body.velocity.x": 0,
         "body.velocity.y": 0,
         "bodyEnabled": true
+    },
+    "object_1": {
+        "x": -208,
+        "y": 27,
+        "key": "left-dresser",
+        "bodyEnabled": false
+    },
+    "object_2": {
+        "x": -209,
+        "y": -142,
+        "key": "left-cabinet",
+        "bodyEnabled": false
+    },
+    "object_3": {
+        "x": -205,
+        "y": -38,
+        "key": "left-box",
+        "bodyEnabled": false
+    },
+    "object_4": {
+        "x": 104,
+        "y": 6,
+        "key": "right-table",
+        "bodyEnabled": false
+    },
+    "object_5": {
+        "x": 104,
+        "y": -142,
+        "key": "right-cabinet",
+        "bodyEnabled": false
+    },
+    "object_6": {
+        "x": 151,
+        "y": -43,
+        "key": "right-box",
+        "bodyEnabled": false
+    },
+    "object_7": {
+        "x": -109,
+        "y": -209,
+        "key": "left-light",
+        "bodyEnabled": false
+    },
+    "object_8": {
+        "x": 141,
+        "y": -208,
+        "key": "right-light",
+        "bodyEnabled": false
     }
 }
