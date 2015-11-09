@@ -54,9 +54,22 @@ var p = Scene.prototype;
 
         this.refreshControls();
 
+        $("#scene-container").on("click", "tr.scene-object", function() {
+            var element = $(event.target);
+            if ($(element).is("td")) {
+                element = $(element).parent();
+            }
+            var uid = $(element).attr("uid");
+            console.error($(event.target));
+            self.unsetEntity();
+            console.error("uid=%s", uid);
+            self.setEntity(self.sceneObjects[uid]);
+        });
+
         $("#button-play").on("click", function() {
             self.playing = !self.playing;
             self.refreshControls();
+            self.unsetEntity();
             self.onButtonPlayCallback();
         });
 
@@ -97,6 +110,13 @@ var p = Scene.prototype;
                 }
                 self.updateProperties();
             }
+        });
+
+        $("#property-visible").on("change", function(event) {
+            if (self.selectedEntity) {
+                self.selectedEntity.visible = $(event.target).prop("checked");
+            }
+            self.updateProperties();
         });
 
         $("#button-save-entities").on("click", function() {
@@ -195,6 +215,8 @@ var p = Scene.prototype;
 
     p.setEntity = function(entity) {
 
+        console.error("entity=%o", entity);
+
         this.unsetEntity();
 
         this.selectedEntity = entity;
@@ -239,6 +261,7 @@ var p = Scene.prototype;
             $("#property-world-y").val(this.selectedEntity.y);
             $("#property-world-z").val(typeof this.selectedEntity.zIndex == "undefined" || this.selectedEntity.zIndex === null ? 0 : this.selectedEntity.zIndex);
 
+            $("#property-visible").prop("checked", this.selectedEntity.visible);
 
             if (this.selectedEntity.body && this.selectedEntity.body.enable) {
                 $("#property-body-enabled").prop("checked", true);
@@ -272,6 +295,7 @@ var p = Scene.prototype;
             self.sceneObjectProperties[uid].x = entity.x;
             self.sceneObjectProperties[uid].y = entity.y;
             self.sceneObjectProperties[uid].zIndex = entity.zIndex;
+            self.sceneObjectProperties[uid].visible = entity.visible;
             self.sceneObjectProperties[uid]["key"] = entity.key;
             self.sceneObjectProperties[uid]["bodyEnabled"] = entity.body !== null;
             if (entity.body) {
@@ -303,6 +327,7 @@ var p = Scene.prototype;
             self.sceneObjects[id].x = self.sceneObjectProperties[id]["x"];
             self.sceneObjects[id].y = self.sceneObjectProperties[id]["y"];
             self.sceneObjects[id].zIndex = self.sceneObjectProperties[id]["zIndex"];
+            self.sceneObjects[id].visible = typeof self.sceneObjectProperties[id].visible == "undefined" || self.sceneObjectProperties[id].visible === null  ?  true : self.sceneObjectProperties[id].visible;
             self.sceneObjects[id]["key"] = entity.key;
 
             if (self.sceneObjectProperties[id]["bodyEnabled"]) {

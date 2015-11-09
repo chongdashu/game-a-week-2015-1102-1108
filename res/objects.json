@@ -5,68 +5,79 @@
         "key": "player",
         "body.velocity.x": 0,
         "body.velocity.y": 0,
-        "bodyEnabled": true
+        "bodyEnabled": true,
+        "visible": true
     },
     "object_1": {
         "x": -208,
         "y": 27,
         "key": "left-dresser",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_2": {
         "x": -209,
         "y": -142,
         "key": "left-cabinet",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_3": {
         "x": -205,
         "y": -38,
         "key": "left-box",
         "bodyEnabled": false,
-        "zIndex": 1
+        "zIndex": 1,
+        "visible": true
     },
     "object_4": {
         "x": 106,
         "y": 7,
         "key": "right-table",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_5": {
         "x": 104,
         "y": -142,
         "key": "right-cabinet",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_6": {
         "x": 151,
         "y": -43,
         "key": "right-box",
         "bodyEnabled": false,
-        "zIndex": 1
+        "zIndex": 1,
+        "visible": false
     },
     "object_7": {
         "x": -109,
         "y": -209,
         "key": "left-light",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_8": {
         "x": 141,
         "y": -208,
         "key": "right-light",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_9": {
         "x": 244,
         "y": 87,
         "key": "carpet",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     },
     "object_10": {
         "x": 286,
         "y": -1,
         "key": "door-closed",
-        "bodyEnabled": false
+        "bodyEnabled": false,
+        "visible": true
     }
 }

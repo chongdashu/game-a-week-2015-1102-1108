@@ -12,6 +12,8 @@
         { "name" : "right-light",         "path" : "res/right-light.png"     },
         { "name" : "left-light",         "path" : "res/left-light.png"     },
         { "name" : "door-closed",         "path" : "res/door-closed.png"     },
-        { "name" : "carpet",         "path" : "res/carpet.png"     }
+        { "name" : "carpet",         "path" : "res/carpet.png"     },
+        { "name" : "action-icon-look",         "path" : "res/action-icon-look.png"     },
+        { "name" : "action-icon-use",         "path" : "res/action-icon-use.png"     }
     ]
 }

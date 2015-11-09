@@ -181,6 +181,7 @@ var p = GameState.prototype;
         
         this.backgroundGroup = this.game.add.group();
         this.objectGroup = this.game.add.group();
+        this.uiGroup = this.game.add.group();
 
         // -- 
         var bg = this.game.make.sprite(0, 0, "room1-background");
@@ -264,8 +265,6 @@ var p = GameState.prototype;
         this.game.scene.update();
         this.objectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
         this.objectGroup.customSort(this.sortZIndex, this);
-
-
     };
 
     p.playUpdate = function() {
