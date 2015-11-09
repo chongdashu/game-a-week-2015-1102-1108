@@ -18,7 +18,7 @@ $(document).ready(function() {
     // --------------------------
     game = new Phaser.Game(GLOBAL_GAME_WIDTH, GLOBAL_GAME_HEIGHT, Phaser.AUTO, "game-container");
     assets = new chongdashu.Assets(game);
-    scene = new chongdashu.Scene(game, null, true);
+    scene = new chongdashu.Scene(game);
 
     // Add all states.
     // ---------------

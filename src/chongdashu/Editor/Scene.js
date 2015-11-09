@@ -15,9 +15,9 @@ this.chongdashu = this.chongdashu||{};
  * @extends Game.Component.SpriteComponent
  * @constructor
  **/
-var Scene = function(game, divId) {
+var Scene = function(game, divId, playing) {
     // @param {Phaser.Keyboard} entity
-    this.init(game, divId);
+    this.init(game, divId, playing);
 };
 var p = Scene.prototype;
 
@@ -28,7 +28,7 @@ var p = Scene.prototype;
     p.onButtonPlayCallbacks = [];
     p.sceneObjectCounter = 0;
 
-    p.init = function(game, divId)
+    p.init = function(game, divId, playing)
     {
         this.game = game;
 
@@ -49,7 +49,7 @@ var p = Scene.prototype;
 
         var self = this;
 
-        this.playing = false;
+        this.playing = typeof(playing) == "undefined" ? false : playing;
         this.sceneObjectCounter = 0;
 
         this.refreshControls();

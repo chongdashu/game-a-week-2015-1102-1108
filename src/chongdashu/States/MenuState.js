@@ -73,9 +73,9 @@ var p = MenuState.prototype;
             strokeThickness: 1
         };
 
-        this.titleText = this.game.add.text(0, -64, "<Title>", titleStyle);
+        this.titleText = this.game.add.text(0, -64, "Room Adventure Quest", titleStyle);
         this.titleText.anchor.setTo(0.5, 0.5);
-        this.subtitleText = this.game.add.text(0, -64+32, "<Sub-Title>", subtitleStyle);
+        this.subtitleText = this.game.add.text(0, -64+32, "OGAW-4", subtitleStyle);
         this.subtitleText.anchor.setTo(0.5, 0.5);
         this.twitterText = this.game.add.text(0, 0, "@chongdashu", twitterText);
         this.twitterText.anchor.setTo(0.5, 0.5);

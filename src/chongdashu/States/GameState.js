@@ -359,7 +359,7 @@ var p = GameState.prototype;
             this.game.physics.arcade.isPaused = true;
             this.objectGroup.forEach(function(object) {
                 object.inputEnabled = true;
-                if (object.input.justPressed(0)) {
+                if (object.input.pointerDown(this.game.input.activePointer.id)) {
                     // just clicked on an entity
                     scene.setEntity(object);
                 }
@@ -401,7 +401,7 @@ var p = GameState.prototype;
 
         this.uiGroup.forEach(function(object) {
             object.inputEnabled = true;
-            if (object.input.justPressed(0)) {
+            if (object.input.pointerDown(this.game.input.activePointer.id)) {
                 // just clicked on an entity
                 self.onDoAction(object);
                 ui = true;
@@ -414,7 +414,7 @@ var p = GameState.prototype;
         if (!ui && !this.equippedEntity && pointerJustDown) {
             this.objectGroup.forEach(function(object) {
                 object.inputEnabled = true;
-                if (object.input.justPressed(0)) {
+                if (object.input.pointerDown(this.game.input.activePointer.id)) {
                     // just clicked on an entity
                     hotspot = hotspot || self.onAction(object);
                 }
@@ -425,7 +425,7 @@ var p = GameState.prototype;
         if (!ui && this.equippedEntity && pointerJustDown) {
             this.objectGroup.forEach(function(object) {
                 object.inputEnabled = true;
-                if (object.input.justPressed(0)) {
+                if (object.input.pointerDown(this.game.input.activePointer.id)) {
                     // just clicked on an entity
                     hotspot = hotspot || this.game.hotspots.processEquippedWithHotspot(this, this.equippedEntity, object);
                 }
@@ -447,7 +447,6 @@ var p = GameState.prototype;
         if (!ui && !hotspot) {
             // walking
         
-
             var tileWidth = 32;
             var tileHeight = 32;
 

@@ -29,7 +29,7 @@
     <title>Game-a-Week #4</title>
 
     <!-- Main -->
-    <script type="text/javascript" src="src/Main.js"></script>
+    <script type="text/javascript" src="src/Main_Editor.js"></script>
     <script type="text/javascript" src="src/chongdashu/Editor/Assets.js"></script>
     <script type="text/javascript" src="src/chongdashu/Editor/Scene.js"></script>
     <script type="text/javascript" src="src/chongdashu/Editor/Hotspots.js"></script>
@@ -91,18 +91,18 @@
         </textarea>
     </div>
 
-    <div id="scene-controls" class="text-center hidden" style="position: absolute; top: 0px; left: 0px; color: black; width: 640px;">
+    <div id="scene-controls" class="text-center" style="position: absolute; top: 0px; left: 0px; color: black; width: 640px;">
         <button id="button-play" class="btn"><span class="glyphicon glyphicon-play"></span></button>
         <button id="button-pause" class="btn"><span class="glyphicon glyphicon-pause"></span></button>
     </div>
 
-    <div id="scene-overlay" class="scene-overlay hidden" style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 200, 0, 0.1); pointer-events: none; width: 640px; height: 480px;">
+    <div id="scene-overlay" class="scene-overlay" style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 200, 0, 0.1); pointer-events: none; width: 640px; height: 480px;">
         <label class="label label-success">Playing ...</label>
     </div>
     
     <div id="game-container" style="background-color: 0x000000;"></div>
     
-    <div id="assets-container " style="margin-top: 5px; position: absolute; left: 0px; width: 640px;" class="hidden">
+    <div id="assets-container" style="margin-top: 5px; position: absolute; left: 0px; width: 640px;">
             <div class="row">
 
                 <div class="col-md-12">
@@ -135,7 +135,7 @@
 
         
     
-    <div id="scene-container" style="position: absolute; top: 0px; left: 640px;" class="hidden">
+    <div id="scene-container" style="position: absolute; top: 0px; left: 640px;">
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
