@@ -3,13 +3,25 @@
         
         "look": [
             {
+                "SAY": "It's just me."
+            }
+        ],
+
+        "use" : [
+            {
+                "SAY": "I can't pick myself up."
+            }
+        ]
+
+    },
+    "object_1": {
+        
+        "look": [
+            {
                 "INPUT": false
             },
             {
                 "WALK_TO": [5, 9]
-            },
-            {
-                "WAIT": "PREVIOUS_ACTION" 
             },
             {
                 "INPUT": true
@@ -25,6 +37,11 @@
         "look": [
             {
                 "SAY" : "Nothing interesting in the cabinet last time I looked."
+            }
+        ],
+        "use" : [
+            {
+                "SAY": "It's too high. There's nothing interesting in there anyway."
             }
         ]
     },
@@ -43,6 +60,11 @@
             {
                 "SAY" : "Nice, sturdy-looking table."
             }
+        ],
+        "use": [
+            {
+                "SAY" : "I don't lift. It's too heavy."
+            }
         ]
     },
 
@@ -51,29 +73,57 @@
             {
                 "SAY" : "We used to stick bulletins there."
             }
+        ],
+        "use": [
+            {
+                "SAY" : "It's too high."
+            }
         ]
     },
 
     "object_6": {
         "look": [
             {
+                "INVENTORY" : true,
+                "SAY" : "Now, where should I put this?"
+            },
+            {
                 "SAY" : "This looks out-of-place."
+            }
+        ],
+        "use": [
+            {
+                "INVENTORY" : true,
+                "EQUIP" : "object_6"
+            },
+            {
+                "ADD_TO_INVENTORY" : "object_6"
             }
         ]
     },
 
     "object_7": {
        "look": [
-        {
-            "SAY" : "It's turned off but it's bright enough in here."
-        }
-    ]
+            {
+                "SAY" : "It's turned off but it's bright enough in here."
+            }
+        ],
+        "use": [
+            {
+                "SAY" : "There's no light switch. Lazy programmer."
+            }
+        ]
     },
 
     "object_8": {
         "look": [
             {
                 "SAY" : "It's turned off but it's bright enough in here."
+            }
+        ],
+        "use": [
+            {
+                "SAY" : "There's no light switch. Lazy programmer."
             }
         ]
     },
@@ -82,6 +132,11 @@
         "look": [
             {
                 "SAY" : "This mat used to be a different color."
+            }
+        ],
+        "use": [
+            {
+                "SAY" : "No way I'm touching that!"
             }
         ]
     },
@@ -93,12 +148,11 @@
         ],
         "use" : [
             {
-                "condition": "is_present:object_3",
-                "say": "All looks good now! I'm out of here!",
-                "on_complete": "exit"
+                "VISIBLE_OBJECT_3": true,
+                "WALK_TO": [18,10]
             },
             {
-                "say": "I can't leave till I've cleaned up here."
+                "SAY": "I can't leave till I've cleaned up here."
             }
         ]
     }

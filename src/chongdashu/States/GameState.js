@@ -39,6 +39,8 @@ var p = GameState.prototype;
 
         this.game.scene.create();
 
+        this.equippedEntity = null;
+
         // -- assets
 
         var map = [
@@ -217,7 +219,7 @@ var p = GameState.prototype;
             strokeThickness: 4
         };
 
-        this.speechText = this.game.add.text(0, 0, "<Title>", textStyle);
+        this.speechText = this.game.add.text(0, 0, "", textStyle);
         this.uiGroup.add(this.speechText);
         this.speechText.anchor.setTo(0.5, 0.5);
         
@@ -409,7 +411,7 @@ var p = GameState.prototype;
 
         var hotspot = false;
 
-        if (!ui) {
+        if (!ui && !this.equippedEntity && pointerJustDown) {
             this.objectGroup.forEach(function(object) {
                 object.inputEnabled = true;
                 if (object.input.justPressed(0)) {
@@ -420,8 +422,23 @@ var p = GameState.prototype;
             }, this);
         }
 
+        if (!ui && this.equippedEntity && pointerJustDown) {
+            this.objectGroup.forEach(function(object) {
+                object.inputEnabled = true;
+                if (object.input.justPressed(0)) {
+                    // just clicked on an entity
+                    hotspot = hotspot || this.game.hotspots.processEquippedWithHotspot(this, this.equippedEntity, object);
+                }
+
+            }, this);
+        }
+
         this.speechText.x = this.player.x;
         this.speechText.y = this.player.y - this.player.height - 25;
+
+        if (this.speechText.x + this.speechText.width/2 > this.game.width/2) {
+            this.speechText.x = this.game.width/2 - this.speechText.width/2;
+        }
 
         if (!hotspot && !ui && pointerJustDown) {
             this.onNoAction();
@@ -444,7 +461,12 @@ var p = GameState.prototype;
                 this.endTileY = 11;
             }
 
-            if (this.game.input.activePointer.isDown) {
+            if (this.equippedEntity) {
+                this.equippedEntity.x = this.input.activePointer.worldX + this.equippedEntity.width/2 +10;
+                this.equippedEntity.y = this.input.activePointer.worldY + this.equippedEntity.height/2 + 10;
+            }
+
+            if (pointerJustDown) {
 
                 var mouseTileX = Math.floor((this.game.width/2 + this.game.input.activePointer.worldX)/tileWidth);
                 var mouseTileY = Math.floor((this.game.height/2 + this.game.input.activePointer.worldY)/tileHeight);
