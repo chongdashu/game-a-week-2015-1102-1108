@@ -1,44 +1,96 @@
 {
     "object_1": {
         
-        "look": "It feels like it's missing something."
+        "look": [
+            {
+                "INPUT": false
+            },
+            {
+                "WALK_TO": [5, 9]
+            },
+            {
+                "WAIT": "PREVIOUS_ACTION" 
+            },
+            {
+                "INPUT": true
+            },
+            {
+                "SAY": "It feels like it's missing something."
+            }
+        ]
 
     },
     "object_2": {
 
-        "look": "Nothing interesting in the cabinet last time I looked."
+        "look": [
+            {
+                "SAY" : "Nothing interesting in the cabinet last time I looked."
+            }
+        ]
     },
 
     "object_3": {
       
-       "look": "The box looks much better placed there now."
+       "look": [
+            {
+                "SAY" : "The box looks much better placed there now."
+            }
+        ]
     },
 
     "object_4": {
-        "look": "Nice, sturdy-looking table."
+        "look": [
+            {
+                "SAY" : "Nice, sturdy-looking table."
+            }
+        ]
     },
 
     "object_5": {
-        "look": "We used to stick bulletins there."
+        "look": [
+            {
+                "SAY" : "We used to stick bulletins there."
+            }
+        ]
     },
 
     "object_6": {
-        "look": "This looks out-of-place."
+        "look": [
+            {
+                "SAY" : "This looks out-of-place."
+            }
+        ]
     },
 
     "object_7": {
-       "look": "It's turned off but it's bright enough in here."
+       "look": [
+        {
+            "SAY" : "It's turned off but it's bright enough in here."
+        }
+    ]
     },
 
     "object_8": {
-        "look": "It's turned off but it's bright enough in here."
+        "look": [
+            {
+                "SAY" : "It's turned off but it's bright enough in here."
+            }
+        ]
     },
 
     "object_9": {
-        "look": "This mat used to be a different color."
+        "look": [
+            {
+                "SAY" : "This mat used to be a different color."
+            }
+        ]
     },
     "object_10": {
-        "look": "That's my way out of here.",
+        "look": [
+            {
+                "SAY" : "That's my way out of here."
+            }
+        ],
         "use" : [
             {
                 "condition": "is_present:object_3",
@@ -48,8 +100,6 @@
             {
                 "say": "I can't leave till I've cleaned up here."
             }
-
-
         ]
     }
 }

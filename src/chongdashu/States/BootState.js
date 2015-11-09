@@ -71,6 +71,7 @@ var p = BootState.prototype;
         this.load.image('preloader-bar', 'res/preloader-bar.png');
         this.load.json('assets', 'res/assets.json');
         this.load.json('objects', 'res/objects.json');
+        this.load.json('hotspots', 'res/hotspots.json');
     };
 
     // @phaser
@@ -83,6 +84,9 @@ var p = BootState.prototype;
 
         this.state.game.scene = window.scene;
         this.state.game.scene.sceneObjectProperties = this.state.game.cache.getJSON("objects");
+
+        this.state.game.hotspots = new chongdashu.Hotspots(game);
+        this.state.game.hotspots.json = this.state.game.cache.getJSON("hotspots");
     };
     
 

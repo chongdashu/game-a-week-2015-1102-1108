@@ -217,15 +217,20 @@ var p = Scene.prototype;
 
         console.error("entity=%o", entity);
 
-        this.unsetEntity();
+        if (this.selectedEntity && this.selectedEntity != entity) {
+            this.unsetEntity();
+        }
+        if (this.selectedEntity != entity) {
 
-        this.selectedEntity = entity;
+            this.selectedEntity = entity;
 
-        this.pointerDeltaX = this.game.input.activePointer.worldX - this.selectedEntity.x;
-        this.pointerDeltaY = this.game.input.activePointer.worldY - this.selectedEntity.y;
+            this.pointerDeltaX = this.game.input.activePointer.worldX - this.selectedEntity.x;
+            this.pointerDeltaY = this.game.input.activePointer.worldY - this.selectedEntity.y;
 
-        this.selectedEntity.tint = 0x00FF00;
-        this.updateProperties();
+            this.selectedEntity.tint = 0x00FF00;
+            this.updateProperties();
+        }
+
     };
 
     p.refreshControls = function() {
@@ -355,13 +360,22 @@ var p = Scene.prototype;
     p.update = function() {
         var self = this;
         if (self.game && self.game.input && self.game.input.activePointer) {
-            // console.warn($(self.footer));
-            $(self.footer).html(
-                "x: " + self.game.input.activePointer.x + " " +
-                "y: " + self.game.input.activePointer.y + " | " +
-                "world.X: " + self.game.input.activePointer.worldX + " " +
-                "world.y: " + self.game.input.activePointer.worldY
-            );
+
+            var str = "";
+
+            str +=   "x: " + self.game.input.activePointer.x + " " +
+                    "y: " + self.game.input.activePointer.y + " | " +
+                    "world.X: " + self.game.input.activePointer.worldX + " " +
+                    "world.y: " + self.game.input.activePointer.worldY;
+
+            var state = self.game.state.getCurrentState();
+            if (state.map) {
+                str +=  " | " +
+                        "tileX:" + Math.floor(self.game.input.activePointer.x/32) + " " +
+                        "tileY:" + Math.floor(self.game.input.activePointer.y/32);
+            }
+
+            $(self.footer).html(str);
         }
 
         if (self.selectedEntity) {

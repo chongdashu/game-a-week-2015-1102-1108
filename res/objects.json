@@ -28,7 +28,7 @@
         "key": "left-box",
         "bodyEnabled": false,
         "zIndex": 1,
-        "visible": true
+        "visible": false
     },
     "object_4": {
         "x": 106,
@@ -50,7 +50,7 @@
         "key": "right-box",
         "bodyEnabled": false,
         "zIndex": 1,
-        "visible": false
+        "visible": true
     },
     "object_7": {
         "x": -109,

@@ -23,6 +23,9 @@ var p = GameState.prototype;
     p.assets = null;
     p.path = null;
 
+    p.selectedEntity = null;
+    p.pointerDown = false;
+
     // @phaser
     p.preload = function() {
         this.assets = game.cache.getJSON('assets');
@@ -203,14 +206,38 @@ var p = GameState.prototype;
         this.game.scene.add(this.player);
         this.game.scene.load();
 
-        // -- debug
-        this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.walkMap);
-        this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.bitmap);
-        this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.pathMap);
+        // -- 
+        
+        var textStyle = {
+            font: "12pt Helvetica",
+            fill: "#FFFFF0",
+            boundsAlignH: "center",
+            boundsAlignV: "middle",
+            stroke: "black",
+            strokeThickness: 4
+        };
 
-        // --
+        this.speechText = this.game.add.text(0, 0, "<Title>", textStyle);
+        this.uiGroup.add(this.speechText);
+        this.speechText.anchor.setTo(0.5, 0.5);
         
 
+        // -- debug
+        // this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.walkMap);
+        // this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.bitmap);
+        // this.game.add.image(-this.game.width/2, -this.game.world.height/2, this.pathMap);
+
+        // --
+        this.actionLook = this.uiGroup.create(0, 0, "action-icon-look");
+        this.actionUse = this.uiGroup.create(0, 0, "action-icon-use");
+        this.actionLook.anchor.set(0.5);
+        this.actionUse.anchor.set(0.5);
+        this.hideActions();
+    };
+
+    p.hideActions = function() {
+        this.actionLook.visible = false;
+        this.actionUse.visible = false;
     };
 
     p.onEntityRemove = function(entity) {
@@ -233,17 +260,98 @@ var p = GameState.prototype;
 
         }
 
+        this.onNoAction();
+
         this.endTileX = -1;
         this.endTileY = -1;
         this.path = [];
         this.pathMap.clear();
     };
 
+    p.onAction = function(object) {
+        console.error(object);
+        if (this.selectedEntity != object) {
+            this.selectedEntity = object;
+
+            this.actionLook.visible = true;
+            this.actionUse.visible = true;
+
+            
+            this.actionUse.inputEnabled = true;
+            this.actionLook.inputEnabled = true;
+
+            this.actionUse.input.useHandCursor = true;
+            this.actionLook.input.useHandCursor = true;
+
+            this.actionLook.x = object.x;
+            this.actionUse.x = object.x;
+
+            this.actionLook.y = object.y;
+            this.actionUse.y = object.y;
+
+            var mod = -1;
+            if (object.y < -this.game.height/4) {
+                mod = 1;
+            }
+
+            var useTween = this.game.tweens.create(this.actionUse).to({
+                x:  object.x - 25,
+                y: object.y + mod* (object.height/2 + 10)
+            }, 250, Phaser.Easing.Exponential.Out, true);
+
+            var lookTween = this.game.tweens.create(this.actionLook).to({
+                x: object.x + 25,
+                y: object.y + mod * (object.height/2 + 10)
+            }, 250, Phaser.Easing.Exponential.Out, true);
+
+            return true;
+        }
+
+        return false;
+    };
+
+    p.onNoAction = function() {
+        if (this.selectedEntity !== null) {
+            this.selectedEntity = null;
+        }
+
+        this.actionLook.visible = false;
+        this.actionUse.visible = false;
+    };
+
+    p.onDoAction = function(object) {
+        if (this.selectedEntity) {
+            var selectedEntity = this.selectedEntity;
+            var useTween = this.game.tweens.create(this.actionUse).to({
+                x : selectedEntity.x,
+                y : selectedEntity.y
+            }, 100, Phaser.Easing.Exponential.InOut, true);
+
+            var lookTween = this.game.tweens.create(this.actionLook).to({
+                x: selectedEntity.x,
+                y: selectedEntity.y
+            }, 100, Phaser.Easing.Exponential.InOut, true);
+
+            useTween.onComplete.add(function(object) {
+                this.actionUse.visible = false;
+                this.actionLook.visible = false;
+            }, this);
+
+            this.game.hotspots.processHotspot(this, object, selectedEntity);
+
+            this.selectedEntity = null;
+        }
+
+    };
+
     // @phaser
     p.update = function() {
+        var self = this;
         if (this.game.scene.playing) {
+
             this.game.physics.arcade.isPaused = false;
             this.playUpdate();
+
         }
         else {
             this.game.physics.arcade.isPaused = true;
@@ -256,7 +364,8 @@ var p = GameState.prototype;
 
             }, this);
         }
-        
+
+        this.game.hotspots.update();
         this.editorUpdate();
     };
 
@@ -268,133 +377,189 @@ var p = GameState.prototype;
     };
 
     p.playUpdate = function() {
-        var tileWidth = 32;
-        var tileHeight = 32;
+        var self = this;
 
-        var tilesX = this.game.world.width/tileWidth;
-        var tilesY = this.game.world.height/tileHeight;
-
-        if (!this.endTileX) {
-            this.endTileX = 17;
-        }
-        if (!this.endTileY) {
-            this.endTileY = 11;
-        }
+        var pointerJustDown = false;
+        var pointerJustUp = false;
 
         if (this.game.input.activePointer.isDown) {
-
-            var mouseTileX = Math.floor((this.game.width/2 + this.game.input.activePointer.worldX)/tileWidth);
-            var mouseTileY = Math.floor((this.game.height/2 + this.game.input.activePointer.worldY)/tileHeight);
-
-            // console.error("pointer [%s, %s] [%s, %s]", this.game.input.activePointer.x, this.game.input.activePointer.y, mouseTileX, mouseTileY);
-            this.endTileX = mouseTileX;
-            this.endTileY = mouseTileY;
-        }
-
-        var endTileX = this.endTileX;
-        var endTileY = this.endTileY;
-
-        var endIndex = endTileY * tilesX + endTileX;
-
-        // get player position
-        var playerTileY = Math.floor((this.player.y + this.game.height/2) / tileHeight);
-        var playerTileX = Math.floor((this.player.x + this.game.width/2) / tileWidth);
-
-        var playerTileIndex = playerTileY * tilesX + playerTileX;
-        var path = this.astar(playerTileIndex, endIndex, this.walkNodes, this.walkEdges);
-        this.path = path;
-
-        // console.log("update(), path(%s, %s)= %o", playerTileIndex, endIndex, path);
-
-        if (!path) {
-            path = [];
-        }
-        var targetIndex = path[0];
-        if (path.length > 1) {
-            targetIndex = path[1];
+            if (!(this.pointerDown)) {
+                pointerJustDown = true;
+            }
+             this.pointerDown = true;
         }
         else {
-            targetIndex = path[0];
+            if (this.pointerDown) {
+                pointerJustUp = true;
+            }
+            this.pointerDown = false;
         }
 
-        this.pathMap.clear();
+        var ui = false;
 
-        if (this.path) {
-
-            var startAndEnd = [[playerTileX, playerTileY], [endTileX, endTileY]];
-
-            for (var i=0; i < startAndEnd.length; i++) {
-
-                var tile = startAndEnd[i];
-
-                var tileX = tile[0];
-                var tileY = tile[1];
-
-                var left = tileWidth*tileX;
-                var top =  tileHeight*tileY;
-                    
-                if (i===0) {
-                    this.pathMap.context.fillStyle = "rgba(00, 200, 0, 0.5)";
-                }
-                else {
-                    this.pathMap.context.fillStyle = "rgba(200, 00, 0, 0.5)";
-                }
-                
-                this.pathMap.context.fillRect(left, top, tileWidth, tileHeight);
-                this.pathMap.context.rect(left, top, tileWidth, tileHeight);
-                this.pathMap.context.stroke();
+        this.uiGroup.forEach(function(object) {
+            object.inputEnabled = true;
+            if (object.input.justPressed(0)) {
+                // just clicked on an entity
+                self.onDoAction(object);
+                ui = true;
             }
-           
 
-            // -- draw
-            for (var k=0; k < path.length-1; k++) {
-                var nodeIndex = path[k];
+        }, this);
 
-                var nodeTileY = Math.floor(nodeIndex / tilesX);
-                var nodeTileX = Math.floor(nodeIndex % tilesX);
+        var hotspot = false;
 
-                var nodeX = tileWidth * nodeTileX;
-                var nodeY = tileHeight * nodeTileY;
+        if (!ui) {
+            this.objectGroup.forEach(function(object) {
+                object.inputEnabled = true;
+                if (object.input.justPressed(0)) {
+                    // just clicked on an entity
+                    hotspot = hotspot || self.onAction(object);
+                }
 
-                var nextIndex = path[k+1];
-                var nextTileY = Math.floor(nextIndex / tilesX);
-                var nextTileX = Math.floor(nextIndex % tilesX);
-
-                var nextX = tileWidth * nextTileX;
-                var nextY = tileHeight * nextTileY;
-
-                var r = Math.floor((k / (path.length-1))*255);
-                var g = Math.floor((1-(k / (path.length-1)))*255);
-
-                // console.log("k=%s, r=%s, g=%s", k, r, g);
-
-                this.pathMap.context.beginPath();
-                this.pathMap.context.strokeStyle = 'rgba(' + r + ', ' + g + ', 0, 1.0)';
-                this.pathMap.context.moveTo(nodeX + tileWidth/2, nodeY + tileHeight/2);
-                this.pathMap.context.lineTo(nextX + tileWidth/2, nextY + tileHeight/2);
-                this.pathMap.context.stroke();
-            }
+            }, this);
         }
 
-        // -- 
+        this.speechText.x = this.player.x;
+        this.speechText.y = this.player.y - this.player.height - 25;
+
+        if (!hotspot && !ui && pointerJustDown) {
+            this.onNoAction();
+        }
+
+        if (!ui && !hotspot) {
+            // walking
         
-        var targetTileX = targetIndex % tilesX;
-        var targetTileY = Math.floor(targetIndex / tilesX);
-        var targetX = targetTileX * tileWidth;
-        var targetY = targetTileY * tileHeight;
 
-        var targetWorldX = -this.game.width/2 + targetX + tileWidth/2;
-        var targetWorldY = -this.game.height/2+ targetY + tileHeight/2;
+            var tileWidth = 32;
+            var tileHeight = 32;
 
-        if (Phaser.Math.fuzzyEqual(targetWorldX, this.player.x, 8)) {
-            this.player.x = targetWorldX;
-        }
+            var tilesX = this.game.world.width/tileWidth;
+            var tilesY = this.game.world.height/tileHeight;
 
-        if (Phaser.Math.fuzzyEqual(targetWorldY, this.player.y, 8)) {
-            this.player.y = targetWorldY;
-        }
-        if (!(this.player.x == targetWorldX && this.player.y == targetWorldY)) {
-            this.game.physics.arcade.moveToXY(this.player, targetWorldX, targetWorldY, 150);
+            if (!this.endTileX) {
+                this.endTileX = 17;
+            }
+            if (!this.endTileY) {
+                this.endTileY = 11;
+            }
+
+            if (this.game.input.activePointer.isDown) {
+
+                var mouseTileX = Math.floor((this.game.width/2 + this.game.input.activePointer.worldX)/tileWidth);
+                var mouseTileY = Math.floor((this.game.height/2 + this.game.input.activePointer.worldY)/tileHeight);
+
+                // console.error("pointer [%s, %s] [%s, %s]", this.game.input.activePointer.x, this.game.input.activePointer.y, mouseTileX, mouseTileY);
+                this.endTileX = mouseTileX;
+                this.endTileY = mouseTileY;
+            }
+
+            var endTileX = this.endTileX;
+            var endTileY = this.endTileY;
+
+            var endIndex = endTileY * tilesX + endTileX;
+
+            // get player position
+            var playerTileY = Math.floor((this.player.y + this.game.height/2) / tileHeight);
+            var playerTileX = Math.floor((this.player.x + this.game.width/2) / tileWidth);
+
+            var playerTileIndex = playerTileY * tilesX + playerTileX;
+            var path = this.astar(playerTileIndex, endIndex, this.walkNodes, this.walkEdges);
+            this.path = path;
+
+            // console.log("update(), path(%s, %s)= %o", playerTileIndex, endIndex, path);
+
+            if (!path) {
+                path = [];
+            }
+            var targetIndex = path[0];
+            if (path.length > 1) {
+                targetIndex = path[1];
+            }
+            else {
+                targetIndex = path[0];
+            }
+
+            this.pathMap.clear();
+
+            if (this.path) {
+
+                var startAndEnd = [[playerTileX, playerTileY], [endTileX, endTileY]];
+
+                for (var i=0; i < startAndEnd.length; i++) {
+
+                    var tile = startAndEnd[i];
+
+                    var tileX = tile[0];
+                    var tileY = tile[1];
+
+                    var left = tileWidth*tileX;
+                    var top =  tileHeight*tileY;
+                        
+                    if (i===0) {
+                        this.pathMap.context.fillStyle = "rgba(00, 200, 0, 0.5)";
+                    }
+                    else {
+                        this.pathMap.context.fillStyle = "rgba(200, 00, 0, 0.5)";
+                    }
+                    
+                    this.pathMap.context.fillRect(left, top, tileWidth, tileHeight);
+                    this.pathMap.context.rect(left, top, tileWidth, tileHeight);
+                    this.pathMap.context.stroke();
+                }
+               
+
+                // -- draw
+                for (var k=0; k < path.length-1; k++) {
+                    var nodeIndex = path[k];
+
+                    var nodeTileY = Math.floor(nodeIndex / tilesX);
+                    var nodeTileX = Math.floor(nodeIndex % tilesX);
+
+                    var nodeX = tileWidth * nodeTileX;
+                    var nodeY = tileHeight * nodeTileY;
+
+                    var nextIndex = path[k+1];
+                    var nextTileY = Math.floor(nextIndex / tilesX);
+                    var nextTileX = Math.floor(nextIndex % tilesX);
+
+                    var nextX = tileWidth * nextTileX;
+                    var nextY = tileHeight * nextTileY;
+
+                    var r = Math.floor((k / (path.length-1))*255);
+                    var g = Math.floor((1-(k / (path.length-1)))*255);
+
+                    // console.log("k=%s, r=%s, g=%s", k, r, g);
+
+                    this.pathMap.context.beginPath();
+                    this.pathMap.context.strokeStyle = 'rgba(' + r + ', ' + g + ', 0, 1.0)';
+                    this.pathMap.context.moveTo(nodeX + tileWidth/2, nodeY + tileHeight/2);
+                    this.pathMap.context.lineTo(nextX + tileWidth/2, nextY + tileHeight/2);
+                    this.pathMap.context.stroke();
+                }
+            }
+
+            // -- 
+            
+            var targetTileX = targetIndex % tilesX;
+            var targetTileY = Math.floor(targetIndex / tilesX);
+            var targetX = targetTileX * tileWidth;
+            var targetY = targetTileY * tileHeight;
+
+            var targetWorldX = -this.game.width/2 + targetX + tileWidth/2;
+            var targetWorldY = -this.game.height/2+ targetY + tileHeight/2;
+
+            if (Phaser.Math.fuzzyEqual(targetWorldX, this.player.x, 8)) {
+                this.player.x = targetWorldX;
+            }
+
+            if (Phaser.Math.fuzzyEqual(targetWorldY, this.player.y, 8)) {
+                this.player.y = targetWorldY;
+            }
+            if (!(this.player.x == targetWorldX && this.player.y == targetWorldY)) {
+                this.game.physics.arcade.moveToXY(this.player, targetWorldX, targetWorldY, 150);
+            }
+
         }
 
 
